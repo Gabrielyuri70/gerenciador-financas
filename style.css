@@ -1,0 +1,657 @@
+:root { 
+    --primary: #1a1a2e; --accent: #4ecca3; --purple: #8a2be2; --danger: #e94560; --warning: #f1c40f; 
+    --bg-body: #f0f2f5; --bg-card: #ffffff; --text-main: #1c1e21; --text-muted: #65676b; --border-color: #ebedf0;
+    --bg-list-item: #ffffff; /* Nova variável para controlar listas */
+}
+[data-bs-theme="dark"] {
+    --bg-body: #0b0e11; --bg-card: #151921; --text-main: #e4e6eb; --text-muted: #b0b3b8; --border-color: #2d323c;
+    --bg-list-item: #151921; /* Força o fundo escuro nas listas */
+}
+/* MELHORIA: Barra de rolagem personalizada e fina */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-body); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+body { 
+    background-color: var(--bg-body); 
+    color: var(--text-main); 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    padding-bottom: 100px; 
+    transition: background-color 0.5s ease, color 0.5s ease; 
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: hidden; 
+}
+#tela-login {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center;
+}
+.login-card {
+    background: var(--bg-card); padding: 30px; border-radius: 24px;
+    width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+.navbar-top { 
+    background: var(--bg-card); backdrop-filter: blur(10px); 
+    padding: 12px 20px; border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; z-index: 1000;
+    transition: all 0.5s ease; /* Simplifica e garante que bordas e cores mudem juntas */
+    color: var(--text-main); 
+    width: 100%; 
+    box-sizing: border-box; /* Adicionado para evitar que o padding gere scroll horizontal */
+}
+.main-balance-card { 
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); 
+    color: white; border-radius: 24px; padding: 25px; margin-bottom: 20px; 
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+}
+.main-balance-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.6); }
+
+.main-balance-card::after {
+    content: ""; position: absolute; top: -50%; right: -20%; width: 200px; height: 200px;
+    background: rgba(255,255,255,0.1); border-radius: 50%;
+}
+
+.section { 
+    display: none; 
+    opacity: 0; 
+}
+.section.active { 
+    display: block; 
+    animation: fadeIn 0.4s ease-out forwards; /* Adicionado forwards para manter o estado final */
+}
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+.card-mov { 
+    background: var(--bg-card); border-radius: 18px; padding: 16px; margin-bottom: 12px; 
+    border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.card-mov:hover { border-color: var(--purple); transform: translateY(-3px) scale(1.01); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+.card-mov:active { transform: scale(0.97); }
+
+.icon-box { 
+    width: 45px; height: 45px; border-radius: 12px; display: flex; 
+    align-items: center; justify-content: center; font-size: 18px; 
+    transition: background 0.3s ease;
+}
+
+.bottom-nav {
+    position: fixed; bottom: 0; width: 100%; background: var(--bg-card);
+    display: flex; justify-content: space-around; 
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); /* Ajuste automático para iPhones novos */
+    border-top: 1px solid var(--border-color); z-index: 1000;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    transition: background 0.5s ease;
+}
+.nav-btn { 
+    background: none; border: none; color: var(--text-muted); 
+    font-size: 11px; flex: 1; transition: all 0.3s ease; 
+}
+.nav-btn i { font-size: 20px; display: block; margin-bottom: 4px; transition: transform 0.2s ease; }
+.nav-btn:active i { transform: translateY(-3px); }
+.nav-btn.active { color: var(--purple); font-weight: bold; }
+
+.btn-add-main {
+    background: var(--purple); width: 56px; height: 56px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; color: white;
+    font-size: 24px; margin-top: -40px; box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
+    border: 4px solid var(--bg-body);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.5s ease;
+}
+
+[data-bs-theme="dark"] .btn-add-main {
+    border-color: var(--bg-body);
+}
+
+.btn-add-main:hover { transform: scale(1.1); }
+.btn-add-main:active { transform: scale(0.85) rotate(90deg); }
+
+.credit-card-container {
+    border-radius: 20px; padding: 15px; color: #ffffff; margin-bottom: 15px;
+    position: relative; box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Adicionado para garantir leitura em qualquer cor de card */
+}
+.credit-card-container:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+
+.card-compact {
+    min-height: 100px; padding: 12px; border-radius: 15px; cursor: pointer;
+}
+.card-compact h6 { font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.card-compact small { font-size: 0.7rem; opacity: 0.8; }
+
+.card-header-ui { display: flex; justify-content: space-between; align-items: flex-start; }
+
+.card-limit-box { background: rgba(255,255,255,0.15); border-radius: 15px; height: 6px; margin: 10px 0; overflow: hidden; }
+.card-limit-progress { height: 100%; background: #4ecca3; border-radius: 15px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.card-actions-ui { display: flex; gap: 8px; margin-top: 10px; }
+.btn-card-white { 
+    background: #fff; color: #000; border: none; border-radius: 12px; padding: 8px; 
+    flex-grow: 1; font-weight: bold; font-size: 14px; transition: all 0.2s;
+}
+.btn-card-white:active { opacity: 0.8; transform: scale(0.98); }
+.btn-card-outline { 
+    background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); 
+    border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; 
+    justify-content: center; transition: all 0.2s;
+}
+.btn-card-outline:active { background: rgba(255,255,255,0.3); }
+
+.goal-bar { height: 8px; border-radius: 4px; background: rgba(0,0,0,0.05); overflow: hidden; }
+.modal-content { border-radius: 28px; border: none; background: var(--bg-card); animation: slideUp 0.3s ease-out; transition: background 0.5s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+.btn-balance-adj {
+    border-radius: 12px; padding: 10px; font-weight: 600; font-size: 0.85rem;
+    transition: all 0.2s; border: none; display: flex; align-items: center; justify-content: center;
+}
+.btn-balance-adj:active { transform: scale(0.95); }
+
+.badge-lixeira { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; text-transform: uppercase; font-weight: 700; }
+
+.password-container { position: relative; }
+.password-toggle { 
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+    cursor: pointer; color: var(--text-muted); z-index: 10;
+}
+
+.historico-pagamento {
+    background: rgba(0,0,0,0.03);
+    border-radius: 10px;
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+}
+.item-historico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 6px 0;
+}
+.item-historico:last-child { border-bottom: none; }
+
+#img-comprovante-view {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: zoom-in;
+}
+.zoom-active {
+    transform: scale(1.5);
+    cursor: zoom-out;
+}
+
+.card-info-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 5px; opacity: 0.9; }
+.compra-card { border-left: 4px solid var(--purple); margin-bottom: 10px; padding: 10px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.2s, background 0.5s ease; }
+.compra-card:hover { transform: scale(1.02); }
+
+/* CORREÇÃO: Borra apenas valores financeiros específicos e evita borrar ícones da interface */
+.values-hidden .money-value {
+    filter: blur(8px); 
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none; /* Adicionado para compatibilidade mobile */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: inline-block;
+    opacity: 0.7; 
+}
+
+/* Garante que cores de texto em valores também sejam borradas, mas apenas se tiverem a classe money-value */
+.values-hidden .money-value.text-success, 
+.values-hidden .money-value.text-danger {
+    filter: blur(10px);
+}
+[data-bs-theme="dark"] .form-control, 
+[data-bs-theme="dark"] .form-select {
+    background-color: var(--bg-card); /* Alterado para bg-card para destacar do fundo da página */
+    color: var(--text-main) !important;
+    border-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .form-control:focus, 
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--purple);
+    box-shadow: 0 0 0 0.25rem rgba(138, 43, 226, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+/* --- AJUSTES NOVOS PARA SININHO E GRÁFICO --- */
+#badge-notificacao {
+    font-size: 0.5rem;
+    margin-top: 5px;
+    margin-left: -5px;
+    border: 2px solid var(--bg-card);
+}
+
+.secao-app {
+    display: none;
+    opacity: 0;
+}
+
+.secao-app.active {
+    display: block;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+/* O amarelo estiloso se aplica apenas quando o valor estiver dentro do card gradiente */
+.main-balance-card #txt-saldo-geral.text-danger, 
+.main-balance-card #txt-saidas.text-danger {
+    color: #ffcc00 !important;
+    font-weight: 800;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+/* Garante que o dropdown não seja cortado pelo scroll da sidebar */
+#menuSidebar .offcanvas-body {
+    overflow-x: visible !important;
+    overflow-y: auto !important;
+}
+
+/* CORREÇÃO GLOBAL: Força os componentes do Bootstrap a respeitarem o tema */
+[data-bs-theme="dark"] .offcanvas,
+[data-bs-theme="dark"] .list-group-item,
+[data-bs-theme="dark"] .modal-header,
+[data-bs-theme="dark"] .modal-footer {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .list-group-item-action:hover {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* Força botões 'light' e inputs transparentes (como o seletor de mês) a mudarem no dark */
+[data-bs-theme="dark"] .btn-light {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+[data-bs-theme="dark"] #mes-atual {
+    color: var(--text-main) !important;
+}
+
+/* Ajuste principal do dropdown */
+#menuSidebar .dropdown-menu {
+    position: static !important; 
+    transform: none !important;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 0;
+}
+
+/* Ajuste para o modo escuro */
+[data-bs-theme="dark"] #menuSidebar .dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+#menuSidebar .dropdown-item {
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+#menuSidebar .dropdown-item:hover {
+    background-color: var(--border-color);
+    padding-left: 1.5rem; /* Efeito de deslocamento visual */
+}
+
+#menuSidebar .dropdown-toggle::after {
+    margin-right: 10px;
+}
+/* --- ESTILOS DO GRÁFICO DUPLO DETALHADO POR CATEGORIA --- */
+
+.chart-detalhado-container {
+    position: relative;
+    height: 300px; /* Ajustado para 300px para melhor visualização em telas menores */
+    max-height: 70vh; /* Adicionado limite para não estourar a altura da tela */
+    width: 100%;
+}
+.chart-center-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none; /* Não impede cliques no gráfico */
+}
+
+.chart-center-info small {
+    color: var(--text-muted);
+}
+
+.chart-center-info span {
+    color: var(--text-main);
+    display: block;
+}
+
+/* Garante que o scroll da legenda HTML fique bom no dark mode */
+[data-bs-theme="dark"] #legenda-grafico-html {
+    scrollbar-color: var(--purple) var(--bg-body);
+}
+
+[data-bs-theme="dark"] #legenda-grafico-html .list-group-item {
+    background-color: transparent;
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+/* Botão Flutuante */
+#btn-calc-float {
+    position: fixed;
+    right: 20px;
+    bottom: 90px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: transform 0.2s;
+}
+
+/* Janela da Calculadora */
+#calc-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 260px;
+    min-width: 220px;
+    height: 380px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both; /* Permite redimensionar */
+    transition: background 0.5s ease;
+}
+
+/* Correção de botões e textos internos da calculadora no dark mode */
+[data-bs-theme="dark"] #calc-container {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .calc-buttons button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .calc-buttons button:active {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+#calc-header {
+    background: var(--purple);
+    color: white;
+    padding: 10px 15px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+#calc-body {
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#calc-display {
+    width: 100%;
+    border: none;
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    text-align: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    color: var(--text-main);
+}
+/* Leve ajuste de contraste para o fundo do visor no modo escuro */
+[data-bs-theme="dark"] #calc-display {
+    background: rgba(255,255,255,0.05);
+}
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.calc-buttons button {
+    border: none;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.05);
+    color: var(--text-main);
+    font-weight: bold;
+    padding: 10px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+[data-bs-theme="dark"] .calc-buttons button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-main) !important;
+}
+
+.btn-calc-op { color: var(--purple) !important; background: rgba(111, 66, 193, 0.1) !important; }
+#btn-calc-result { grid-row: span 2; background: var(--purple); color: white; }
+.calc-controls button { background: transparent; border: none; color: white; }
+/* --- ESTILOS DO BLOCO DE NOTAS --- */
+
+/* Card de cada nota na lista */
+.nota-card {
+    border-radius: 15px;
+    padding: 15px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.05);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+}
+
+.nota-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.nota-titulo-card {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nota-resumo-card {
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.6);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+/* Ícone de fixado no card */
+.pin-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.7rem;
+    color: var(--purple);
+    transform: rotate(45deg);
+}
+
+/* Opções de cores no Modal */
+.cor-opt {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.cor-opt:hover {
+    transform: scale(1.2);
+}
+
+.cor-opt.active {
+    border-color: var(--purple);
+}
+
+/* Ajustes no Modal de Notas */
+#modalNota .modal-content {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#nota-titulo::placeholder, #nota-texto::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* Força os inputs de texto internos do modal de nota a usarem a cor correta */
+[data-bs-theme="dark"] #nota-titulo,
+[data-bs-theme="dark"] #nota-texto {
+    color: var(--text-main) !important;
+}
+/* Botão de fixar dentro do modal */
+#btn-fixar-nota {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+#btn-fixar-nota.active {
+    background: rgba(0,0,0,0.1);
+    color: var(--purple);
+}
+
+#btn-fixar-nota.active i {
+    font-weight: 900; /* Preenche o ícone do FontAwesome */
+}
+
+/* Dark Mode para Notas */
+[data-bs-theme="dark"] .nota-card {
+    border-color: rgba(255,255,255,0.1);
+}
+/* Se a nota tiver fundo branco padrão, no dark mode ela se adapta. Se for colorida, mantém o texto escuro */
+[data-bs-theme="dark"] .nota-card[style*="background:#ffffff"],
+[data-bs-theme="dark"] .nota-card[style*="background: #ffffff"],
+[data-bs-theme="dark"] .nota-card[style*="background: rgb(255, 255, 255)"],
+[data-bs-theme="dark"] .nota-card:not([style*="background"]) {
+    color: var(--text-main);
+}
+[data-bs-theme="dark"] .nota-card[style*="background-color"],
+[data-bs-theme="dark"] .nota-card[style*="background: #fff9c4"],
+[data-bs-theme="dark"] .nota-card[style*="background: #ffcdd2"],
+[data-bs-theme="dark"] .nota-card[style*="background: #bbdefb"],
+[data-bs-theme="dark"] .nota-card[style*="background: #c8e6c9"] {
+    color: #1c1e21 !important; /* Mantém o texto escuro legível apenas nos cards coloridos */
+}
+/* --- ESTILOS DO SISTEMA DE METAS --- */
+.bg-purple {
+    background-color: var(--purple) !important;
+}
+
+/* Ajuste das barras de progresso para herdar o padrão arredondado da interface */
+.progress {
+    background-color: rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Garante o contraste dos textos e botões das metas no Modo Escuro */
+[data-bs-theme="dark"] .card.bg-white {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white h6 {
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white b:not(.text-success) {
+    color: var(--text-main) !important;
+}
+
+/* --- CORREÇÕES ESPECÍFICAS PARA A TELA DE DÍVIDAS --- */
+
+/* Força os cards de "Total a pagar" e "Total a receber" a ficarem escuros */
+[data-bs-theme="dark"] #dividas .card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Corrige o texto desses cards para não sumirem */
+[data-bs-theme="dark"] #dividas .card .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Corrige o fundo da barra de abas (Eu devo / Me devem) */
+[data-bs-theme="dark"] #pills-tab {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Estiliza os botões das abas quando não estão selecionados */
+[data-bs-theme="dark"] #pills-tab .nav-link {
+    color: var(--text-muted) !important;
+}
+
+/* Estiliza o botão da aba ativa */
+[data-bs-theme="dark"] #pills-tab .nav-link.active {
+    background-color: var(--purple) !important;
+    color: #ffffff !important;
+}
+
+/* Força as listas de dívidas injetadas a seguirem o padrão escuro */
+[data-bs-theme="dark"] #lista-eu-devo .card-mov,
+[data-bs-theme="dark"] #lista-me-devem .card-mov {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
