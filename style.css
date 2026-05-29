@@ -88,6 +88,7 @@ body {
     background: var(--bg-card); border-radius: 18px; padding: 16px; margin-bottom: 12px; 
     border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    justify-content: space-between; /* Distribui o espaço entre os blocos */
 }
 .card-mov:hover { border-color: var(--purple); transform: translateY(-3px) scale(1.01); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
 .card-mov:active { transform: scale(0.97); }
@@ -96,8 +97,23 @@ body {
     width: 45px; height: 45px; border-radius: 12px; display: flex; 
     align-items: center; justify-content: center; font-size: 18px; 
     transition: background 0.3s ease;
+    flex-shrink: 0; /* IMPEDE o ícone de diminuir de tamanho */
 }
 
+/* NOVA CLASSE: Para o container do texto central (título/subtítulo) */
+.card-mov-info {
+    flex-grow: 1;      /* Faz o texto ocupar todo o espaço central disponível */
+    min-width: 0;      /* Permite que o flex container reduza e quebre o texto sem estourar */
+    word-wrap: break-word;
+}
+
+/* NOVA CLASSE: Para garantir que o valor não quebre e fique sempre legível */
+.card-mov-value {
+    text-align: right;
+    flex-shrink: 0;    /* IMPEDE o valor financeiro de ser espremido ou quebrado */
+    white-space: nowrap; /* Garante que o R$ e o número fiquem na mesma linha */
+    font-weight: 700;
+}
 .bottom-nav {
     position: fixed; bottom: 0; width: 100%; background: var(--bg-card);
     display: flex; justify-content: space-around; 
@@ -291,10 +307,15 @@ body {
     color: var(--text-main) !important;
 }
 
-/* Força botões 'light' e inputs transparentes (como o seletor de mês) a mudarem no dark */
+/* DEPOIS */
 [data-bs-theme="dark"] .btn-light {
     background-color: var(--border-color) !important;
     color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+/* Força o container arredondado do calendário e o input a ficarem escuros */
+[data-bs-theme="dark"] .style-calendario-topo .bg-light {
+    background-color: var(--bg-card) !important;
     border-color: var(--border-color) !important;
 }
 [data-bs-theme="dark"] #mes-atual {
@@ -670,6 +691,43 @@ body {
     color: var(--text-main) !important;
     border-color: var(--border-color) !important;
 }
+
+/* Nova regra: Aplica o modo escuro no input, select e no bloco da lupa na área de dívidas */
+[data-bs-theme="dark"] #dividas input,
+[data-bs-theme="dark"] #dividas select,
+[data-bs-theme="dark"] #dividas .input-group-text {
+    background-color: var(--bg-card) !important;
+    color: var(--text-muted) !important; /* Deixa o ícone da lupa sutil como o placeholder */
+    border-color: var(--border-color) !important;
+}
+
+/* Nova regra: Corrige o histórico de pagamentos, o prazo e o avatar de dívidas no modo escuro */
+[data-bs-theme="dark"] .historico-pagamento {
+    background-color: rgba(255, 255, 255, 0.05) !important; /* Fundo escuro leve e translúcido */
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color);
+}
+
+[data-bs-theme="dark"] .historico-pagamento small,
+[data-bs-theme="dark"] .historico-pagamento .text-muted {
+    color: var(--text-muted) !important; /* Mantém os títulos internos cinzas, mas legíveis */
+}
+
+/* Se a caixinha de "Prazo" for um badge ou elemento com fundo claro nativo */
+[data-bs-theme="dark"] #dividas .card-mov border, 
+[data-bs-theme="dark"] #dividas [style*="background-color: white"],
+[data-bs-theme="dark"] #dividas .badge:not(.bg-purple) {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+}
+
+/* Corrige o fundo do ícone/avatar padrão caso ele use um bg-light ou similar */
+[data-bs-theme="dark"] #dividas .icon-box,
+[data-bs-theme="dark"] #dividas .avatar-login-container i {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
 /* Garante o ajuste perfeito dos botões de status */
 .filter-status-btn {
     white-space: nowrap !important;
