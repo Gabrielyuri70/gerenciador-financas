@@ -1,0 +1,21 @@
+{
+  "short_name": "Finanças Pro",
+  "name": "Finanças Pro - Ultra Edition",
+  "icons": [
+    {
+      "src": "img/perfil.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "img/perfil.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#4ecca3",
+  "display": "standalone",
+  "orientation": "portrait"
+}
