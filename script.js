@@ -149,21 +149,21 @@ function redefinirSenha() {
 function entrarVisitante() {
     sessionStorage.setItem('user_ativo', 'visitante');
     
-    // Varre todas as chaves de 'dados' e limpa automaticamente sem apagar o localStorage
-    Object.keys(dados).forEach(chave => {
-        if (Array.isArray(dados[chave])) {
-            dados[chave] = []; // Esvazia qualquer array existente ou que venha a existir
-        } else if (typeof dados[chave] === 'object' && dados[chave] !== null) {
-            // Se for um objeto (como as configurações), redefine para o padrão limpo
-            dados[chave] = { dark: false, oculto: false };
-        }
-    });
+    // CORREÇÃO: Em vez de limpar o objeto 'dados' global (que apaga o do usuário real),
+    // nós instanciamos uma estrutura limpa isolada para a sessão do visitante.
+    dados = { 
+        movs: [], 
+        cartoes: [], 
+        dividas: [], 
+        metas: [], 
+        lixeira: [], 
+        historicoQuitados: [], 
+        config: { dark: false, oculto: false } 
+    };
 
-// Limpa também as notas na memória
+    // Limpa também as notas locais apenas em memória para o visitante
     if (typeof notas !== 'undefined') {
         notas = [];
-    } else {
-        localStorage.setItem('financas_notas', JSON.stringify([]));
     }
 
     // ADICIONADO: Força o nome a virar Visitante na tela
@@ -172,6 +172,7 @@ function entrarVisitante() {
     document.getElementById('tela-login').style.display = 'none';
     renderTudo();
 }
+
 function carregarDadosPerfil() {
     if (sessionStorage.getItem('user_ativo') === 'visitante') return;
     
@@ -770,8 +771,13 @@ function addDivida() {
 // --- RENDERIZAÇÃO ---
 
 function salvarERender() {
+    // SE FOR VISITANTE: Impede a gravação física no localStorage para não apagar os dados de contas reais
+    if (sessionStorage.getItem('user_ativo') === 'visitante' || usuarioAtivo === 'visitante') {
+        renderTudo();
+        return;
+    }
+
     const stringDados = JSON.stringify(dados);
-    
     // Calcula o tamanho em megabytes (1 caractere padrão UTF-16 ocupa aprox. 2 bytes em strings)
     const tamanhoMB = (stringDados.length * 2) / (1024 * 1024);
     
@@ -1277,6 +1283,20 @@ window.onload = () => {
     if (!usuarioAtivo && localStorage.getItem('user_lembrado')) {
         usuarioAtivo = localStorage.getItem('user_lembrado');
         sessionStorage.setItem('user_ativo', usuarioAtivo);
+    }
+
+    // CORREÇÃO: Se for visitante ao dar F5, isola uma estrutura limpa em memória sem afetar chaves globais
+    if (usuarioAtivo === 'visitante') {
+        dados = { 
+            movs: [], 
+            cartoes: [], 
+            dividas: [], 
+            metas: [], 
+            lixeira: [], 
+            historicoQuitados: [], 
+            config: { dark: false, oculto: false } 
+        };
+        if (typeof notas !== 'undefined') notas = [];
     }
 
     if(usuarioAtivo) {
@@ -1919,7 +1939,8 @@ function excluirHistoricoMeta(metaId, index) {
 }
 function excluirMeta(id) {
     if (confirm("Deseja realmente excluir esta meta? O valor guardado não será devolvido automaticamente ao saldo geral.")) {
-        dados.metas = dados.metas.filter(m => m.id != id);
+        const idNumerico = Number(id); // <-- Normalização para garantir tipagem estrita
+        dados.metas = dados.metas.filter(m => m.id !== idNumerico);
         salvarERender();
     }
 }
@@ -2094,8 +2115,9 @@ function renderizarNotas() {
     const fixadas = notas.filter(n => n.fixada);
     const normais = notas.filter(n => !n.fixada);
 
-    containerFixadas.classList.toggle('d-none', fixadas.length === 0);
-    tituloOutras.classList.toggle('d-none', fixadas.length === 0);
+        containerFixadas.classList.toggle('d-none', fixadas.length === 0);
+    // O título de outras notas só aparece se existirem notas fixadas E também notas normais ao mesmo tempo
+    tituloOutras.classList.toggle('d-none', fixadas.length === 0 || normais.length === 0);
 
         const criarCard = (nota) => `
         <div class="col-6 col-md-4 mb-3">
@@ -2112,7 +2134,7 @@ function renderizarNotas() {
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item py-2 text-danger" onclick="excluirNotaDireta(${nota.id})">
+                            <button class="dropdown-item py-2 text-danger" onclick="event.stopPropagation(); excluirNotaDireta(${nota.id})">
                                 <i class="fas fa-trash-alt me-2"></i> Excluir Nota
                             </button>
                         </li>
