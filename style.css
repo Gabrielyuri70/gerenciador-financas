@@ -158,17 +158,19 @@ body {
 .btn-add-main:active { transform: scale(0.85) rotate(90deg); }
 
 .credit-card-container {
-    border-radius: 20px; padding: 15px; color: #ffffff; margin-bottom: 15px;
+    border-radius: 20px; padding: 15px; color: #ffffff; margin-bottom: 0px; margin-top: -8px;
     position: relative; box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;
     transition: all 0.3s ease;
     text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Adicionado para garantir leitura em qualquer cor de card */
 }
+
 .credit-card-container:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
 
 .card-compact {
-    min-height: 100px; padding: 12px; border-radius: 15px; cursor: pointer;
+    min-height: 100px; padding: 12px; border-radius: 15px; cursor: pointer; margin-bottom: 0px; margin-top: -8px;
 }
+
 .card-compact h6 { font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 .card-compact small { font-size: 0.7rem; opacity: 0.8; }
 
