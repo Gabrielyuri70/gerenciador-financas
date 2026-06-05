@@ -811,3 +811,152 @@ body {
 #btn-olho:active {
     transform: scale(0.9); /* Efeito visual de clique */
 }
+.card-resumo-divida {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color) !important;
+    transition: transform 0.2s ease;
+}
+
+/* Estilo para os botões de filtro rápido estilo pílula */
+.btn-status-filter {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.btn-status-filter.active, .btn-status-filter:hover {
+    background: var(--purple);
+    color: #ffffff !important;
+    border-color: var(--purple);
+    box-shadow: 0 4px 10px rgba(138, 43, 226, 0.2);
+}
+
+/* Card customizado para a listagem de dívidas */
+.divida-modern-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.divida-modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Indicadores de status laterais/badges bem definidos */
+.divida-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    display: inline-block;
+}
+.badge-vencida { background-color: rgba(233, 69, 96, 0.12); color: #e94560 !important; }
+.badge-pendente { background-color: rgba(241, 196, 15, 0.15); color: #d4ac0d !important; }
+.badge-paga { background-color: rgba(78, 204, 163, 0.15); color: #2ecc71 !important; }
+
+/* Estrutura interna do cabeçalho da dívida */
+.divida-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.divida-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.divida-avatar-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(138, 43, 226, 0.08);
+    color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.divida-title-main {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.divida-subtitle-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Área de valores destacada */
+.divida-price-box {
+    text-align: right;
+}
+.divida-value-amount {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Linha de rodapé com datas e ações rápidas */
+.divida-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+
+.divida-date-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.divida-actions-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-divida-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+.btn-divida-action:active { transform: scale(0.9); }
+
+.btn-action-whats { background: rgba(46, 204, 113, 0.12); color: #2ecc71; }
+.btn-action-whats:hover { background: #2ecc71; color: #fff; }
+
+.btn-action-more { background: rgba(0, 0, 0, 0.04); color: var(--text-muted); }
+[data-bs-theme="dark"] .btn-action-more { background: rgba(255, 255, 255, 0.06); }
+.btn-action-more:hover { background: var(--purple); color: #fff; }
