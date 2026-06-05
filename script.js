@@ -240,6 +240,10 @@ function showSection(id, btn) {
     if(id === 'lixeira') {
         renderLixeira();
     }
+    // Se abrir a aba de dívidas, força a atualização do histórico
+    if(id === 'aba-dividas' || id === 'dividas') { // <-- ADICIONE ESTE BLOCO
+        renderizarHistoricoDividas();
+    }
     // Se abrir as configurações ou perfil, preenche os campos com os dados atuais salvos
     if(id === 'aba-perfil' || id === 'aba-configuracoes') {
         carregarDadosPerfil();
@@ -394,7 +398,6 @@ function filtrarBusca(valor) {
 }
 
 // --- CARTÕES ---
-
 function abrirModalCartao(id = null) {
     if(!verificarAcesso()) return;
     if(id) {
@@ -404,6 +407,7 @@ function abrirModalCartao(id = null) {
         document.getElementById('card-limite').value = c.limite.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById('card-bandeira').value = c.bandeira;
         document.getElementById('card-cor-custom').value = c.cor;
+        document.getElementById('card-cor-fonte').value = c.corFonte || "#ffffff"; // <-- ADICIONADO: Resgata a cor da fonte (padrão branca se não existir)
         document.getElementById('card-tipo').value = c.tipo;
         document.getElementById('card-fecha').value = c.fecha;
         document.getElementById('card-vence').value = c.vence;
@@ -415,6 +419,7 @@ function abrirModalCartao(id = null) {
         document.getElementById('card-limite').value = "";
         document.getElementById('card-bandeira').value = "Visa"; // Valor padrão inicial
         document.getElementById('card-cor-custom').value = "#6f42c1"; 
+        document.getElementById('card-cor-fonte').value = "#ffffff"; // <-- ADICIONADO: Define branca por padrão para novos cartões
         document.getElementById('card-tipo').value = "Crédito";
         document.getElementById('card-fecha').value = "10";
         document.getElementById('card-vence').value = "15";
@@ -423,7 +428,6 @@ function abrirModalCartao(id = null) {
     }
     new bootstrap.Modal(document.getElementById('modalCartao')).show();
 }
-
 function addCartao() {
     const idEdit = document.getElementById('card-id-edit').value;
     const card = {
@@ -432,13 +436,14 @@ function addCartao() {
         limite: parseFloat(document.getElementById('card-limite').value.replace(/\./g, '').replace(',', '.')) || 0,
         bandeira: document.getElementById('card-bandeira').value,
         cor: document.getElementById('card-cor-custom').value,
+        corFonte: document.getElementById('card-cor-fonte').value, // <-- ADICIONADO: Captura o valor selecionado do formulário (preta ou branca)
         tipo: document.getElementById('card-tipo').value,
         fecha: document.getElementById('card-fecha').value,
         vence: document.getElementById('card-vence').value,
         compras: idEdit ? dados.cartoes.find(x => x.id == idEdit).compras : []
     };
     if(!card.nome || isNaN(card.limite)) return alert("Preencha o nome e limite!");
-    
+
     if(idEdit) {
         const idx = dados.cartoes.findIndex(c => c.id == idEdit);
         dados.cartoes[idx] = card;
@@ -798,6 +803,7 @@ function renderTudo() {
     renderizarNotas(); // Adicionado aqui para centralizar o ciclo de renderização
     verificarNotificacoes();
     renderGraficoRank(); 
+    renderizarHistoricoDividas(); // <-- ADICIONE ESTA LINHA AQUI
 }
 function renderResumo() {
     const inputMes = document.getElementById('mes-atual');
@@ -936,7 +942,7 @@ function renderCartoes() {
         
         return `
         <div class="col-6 mb-3">
-            <div class="credit-card-container card-compact" style="background:${c.cor}" onclick="verCompras(${c.id})">
+            <div class="credit-card-container card-compact" style="background:${c.cor}; color:${c.corFonte || '#ffffff'};" onclick="verCompras(${c.id})">
                 <div class="card-header-ui">
                     <div>
                         <h6 class="mb-0">${c.nome}</h6>
@@ -1343,7 +1349,14 @@ window.onload = () => {
             renderDividas();
         });
     }
-
+    
+    // Novo escutador para o select unificado de filtro e ordenação juntas
+    const selectUnificadoDiv = document.getElementById('filtro-ordenar-divida'); // <-- ADICIONE ESTE BLOCO
+    if (selectUnificadoDiv) {
+        selectUnificadoDiv.addEventListener('change', (e) => {
+            tratarFiltroEOrdenacao(e.target.value);
+        });
+    }
     // Só processa dados se houver um usuário logado
     if (usuarioAtivo) {
         limparHistoricoAntigo();
@@ -2270,9 +2283,8 @@ function tratarFiltroEOrdenacao(valor) {
     if (valor.startsWith('status-')) {
         // Extrai o status (todas, pendentes ou vencidas)
         const status = valor.replace('status-', '');
-        if (typeof setStatusDivida === 'function') {
-            setStatusDivida(status, null);
-        }
+        statusDividaAtual = status; // <-- Define a variável global do filtro de status diretamente
+        renderDividas(); // <-- Renderiza a tela aplicando o filtro imediatamente
     } else {
         // CORREÇÃO: Aplica a nova ordenação na variável global usada por renderDividas()
         ordemDividaAtual = valor;
@@ -2281,6 +2293,7 @@ function tratarFiltroEOrdenacao(valor) {
         }
     }
 }
+
 function anteciparParcelaModal(idCompra) {
     const card = dados.cartoes.find(x => x.id == Number(cartaoContexto));
     const compra = card.compras.find(c => c.id == idCompra);
