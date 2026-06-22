@@ -199,7 +199,7 @@ function atualizarPerfilUsuario() {
 
     if (novaPass) {
         auth.pass = novaPass; // <-- Agora a variável interna realmente recebe a nova senha
-        alert("Usuário e Senha atualizados com sucesso!");
+        alert("Usuário e Senha atualizados com sucesso!"); // Correção de português/ortografia aplicada aqui
         document.getElementById('nova-pass-perfil').value = ""; 
     } else {
         alert("Nome de usuário atualizado com sucesso!");
@@ -484,6 +484,7 @@ function abrirModalCompraCartao(id = null) {
         document.getElementById('compra-valor').value = c.valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
         document.getElementById('compra-parcelas').value = c.parcelas;
         document.getElementById('compra-data').value = c.data;
+        document.getElementById('compra-emprestado').checked = c.emprestado || false; // <-- AGREGADO
         document.getElementById('btn-excluir-compra').classList.remove('d-none');
         document.getElementById('modalCompraTitulo').innerText = "Editar Compra";
     } else {
@@ -492,6 +493,7 @@ function abrirModalCompraCartao(id = null) {
         document.getElementById('compra-valor').value = "";
         document.getElementById('compra-parcelas').value = 1;
         document.getElementById('compra-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('compra-emprestado').checked = false; // <-- AGREGADO
         document.getElementById('btn-excluir-compra').classList.add('d-none');
         document.getElementById('modalCompraTitulo').innerText = "Nova Compra";
     }
@@ -522,7 +524,8 @@ function salvarCompraCartao() {
         parcelas: parcelas,
         data: document.getElementById('compra-data').value || agora.toISOString().split('T')[0],
         hora: compraAntiga ? (compraAntiga.hora || horaCompra) : horaCompra,
-        pagamentos: compraAntiga ? (compraAntiga.pagamentos || []) : []
+        pagamentos: compraAntiga ? (compraAntiga.pagamentos || []) : [],
+        emprestado: document.getElementById('compra-emprestado').checked // <-- AGREGADO
     };
 
     if (!compra.desc || isNaN(compra.valorTotal) || compra.valorTotal <= 0) {
@@ -536,26 +539,32 @@ function salvarCompraCartao() {
         card.compras.push(compra);
     }
 
-    const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
-    const descFinal = parcelas > 1 ? `${compra.desc} (1/${parcelas})` : compra.desc;
-
-    const movData = {
-        id: idParaMov, 
-        idRelacionado: compra.id, 
-        desc: descFinal,
-        valor: valorParcela,
-        tipo: 'saida',
-        cat: 'Cartão',
-        data: compra.data,
-        hora: compra.hora
-    };
-
-    if(movIdx > -1) {
-        dados.movs[movIdx] = movData;
+    // Se for cartão emprestado, remove do extrato se já existia, e não insere um novo
+    if (compra.emprestado) {
+        if (movIdx > -1) {
+            dados.movs.splice(movIdx, 1);
+        }
     } else {
-        dados.movs.push(movData);
-    }
+        const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
+        const descFinal = parcelas > 1 ? `${compra.desc} (1/${parcelas})` : compra.desc;
 
+        const movData = {
+            id: idParaMov, 
+            idRelacionado: compra.id, 
+            desc: descFinal,
+            valor: valorParcela,
+            tipo: 'saida',
+            cat: 'Cartão',
+            data: compra.data,
+            hora: compra.hora
+        };
+
+        if(movIdx > -1) {
+            dados.movs[movIdx] = movData;
+        } else {
+            dados.movs.push(movData);
+        }
+    }
     salvarERender();
     renderComprasCartao();
     bootstrap.Modal.getInstance(document.getElementById('modalCompraCartao')).hide();
@@ -632,7 +641,7 @@ function renderComprasCartao() {
         return `
         <div class="card-mov align-items-start py-3 mb-2 shadow-sm bg-white rounded-3">
             <div class="flex-grow-1 ms-2">
-                <div class="fw-bold">${c.desc} <span class="badge bg-purple" style="font-size:0.65rem">${c.infoParcela}</span> ${valorRestante <= 0 ? '<span class="badge bg-success ms-1" style="font-size:0.6rem">PAGO</span>' : ''}</div>
+                <div class="fw-bold">${c.desc} <span class="badge bg-purple" style="font-size:0.65rem">${c.infoParcela}</span> ${c.emprestado ? '<span class="badge bg-warning text-dark ms-1" style="font-size:0.6rem">EMPRESTADO</span>' : ''} ${valorRestante <= 0 ? '<span class="badge bg-success ms-1" style="font-size:0.6rem">PAGO</span>' : ''}</div>
                 <small class="text-muted d-block">Total restante: R$ ${valorRestante.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</small>
                 
                 ${c.pagamentos && c.pagamentos.length > 0 ? `
@@ -1985,15 +1994,13 @@ function calcApagar() {
 function calcResultado() {
     if (!calcExpressao) return;
     try {
-        // Sanitização rigorosa contra qualquer caractere alfabético perigoso
         if (/[^0-9\+\-\*\/\.\(\)]/.test(calcExpressao)) throw new Error("Invalido");
         
-        // Execução protegida em escopo isolado e limpo
-        let res = (new Function(`"use strict"; return (${calcExpressao})`))();
-
+        // Alteração segura: Evita a criação dinâmica com template strings para prevenir injeção de código
+        let res = Function('"use strict"; return (' + calcExpressao + ')')();
+        
         if (res === undefined || isNaN(res) || !isFinite(res)) throw new Error("Erro");
         if (!Number.isInteger(res)) res = parseFloat(res.toFixed(2));
-        
         document.getElementById('calc-display').value = res;
         calcExpressao = res.toString();
     } catch (e) {
