@@ -1,0 +1,185 @@
+/* ===== Finanças Pro — acabamento leve (tema.css) — usa as cores e tamanhos ORIGINAIS do app ===== */
+:root { --chip:#f0eefb; --hero:linear-gradient(135deg,#6366f1 0%,#a855f7 100%); }
+[data-bs-theme="dark"] { --chip:#1f2430; }
+.section.active { animation:entrar .3s ease; } @keyframes entrar { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.money-value,#txt-saldo-geral { font-variant-numeric:tabular-nums; }
+
+/* Saudação e sequência (início) */
+#saudacao { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:0 2px 12px; }
+#saudacao h5 { margin:0; font-size:1.05rem; font-weight:700; } #saudacao small { font-size:.8rem; color:var(--text-muted); text-transform:capitalize; }
+.chip-seq { background:#f59e0b; color:#fff; border-radius:999px; padding:4px 10px; font-size:.75rem; font-weight:700; white-space:nowrap; }
+
+/* Atalhos rápidos (compactos) */
+#acoes-rapidas { display:flex; gap:10px; overflow-x:auto; padding:2px 2px 14px; scrollbar-width:none; } #acoes-rapidas::-webkit-scrollbar { display:none; }
+.acao-rapida { flex:0 0 auto; width:58px; text-align:center; background:none; border:0; padding:0; color:var(--text-main); font-size:11px; font-weight:600; line-height:1.2; }
+.acao-rapida i { display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin:0 auto 5px; border-radius:14px; background:var(--chip); color:var(--purple); font-size:16px; }
+.acao-rapida.destaque i { background:var(--purple); color:#fff; }
+[data-bs-theme="dark"] .acao-rapida i { color:#c4b5fd; } [data-bs-theme="dark"] .acao-rapida.destaque i { color:#fff; }
+
+/* Dica do dia (quanto posso gastar por dia) */
+#card-diario { background:var(--bg-card) !important; border:1px solid var(--border-color) !important; border-left:4px solid var(--accent) !important; color:var(--text-main); }
+
+/* Lista de movimentações: seta de entrada/saída ao lado esquerdo */
+.card-mov > :first-child { flex:1; min-width:0; }
+.card-mov:has(.text-success)::before,.card-mov:has(.text-danger)::before { flex:0 0 34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; }
+.card-mov:has(.text-success)::before { content:'↓'; background:rgba(78,204,163,.18); color:#1f9d78; }
+.card-mov:has(.text-danger)::before { content:'↑'; background:rgba(233,69,96,.15); color:#e94560; }
+
+.progress { border-radius:999px; } .progress-bar { border-radius:999px; } .badge { border-radius:999px; }
+
+/* Menu lateral: todas as opções à mostra (sem precisar clicar nos grupos) */
+#menuSidebar .dropdown-menu { display:block !important; position:static !important; transform:none !important; box-shadow:none !important; background:transparent; border:0; padding:0 0 6px; }
+#menuSidebar .dropdown-toggle { pointer-events:none; cursor:default; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); background:transparent; border:0; padding:12px 16px 4px !important; }
+#menuSidebar .dropdown-toggle::after,#menuSidebar .dropdown-toggle i { display:none; }
+#menuSidebar .dropdown-item { border-radius:12px; margin:1px 8px; width:calc(100% - 16px); font-size:.95rem; }
+#menuSidebar .dropdown-item i { width:30px; height:30px; border-radius:10px; background:var(--chip); display:inline-flex; align-items:center; justify-content:center; margin-right:10px !important; font-size:14px; }
+[data-bs-theme="dark"] .bg-white,[data-bs-theme="dark"] .bg-light { background:var(--bg-card) !important; } [data-bs-theme="dark"] .text-dark { color:var(--text-main) !important; }
+
+/* Computador: menu sempre aberto à esquerda */
+@media (min-width:992px) {
+  #menuSidebar { visibility:visible !important; transform:none !important; width:280px !important; border-right:1px solid var(--border-color); }
+  #menuSidebar .btn-close,.navbar-top > button:first-child { display:none; } .offcanvas-backdrop { display:none !important; }
+  body { padding-left:280px; } .bottom-nav { left:280px; width:calc(100% - 280px); }
+}
+
+/* ===== Nova Início (estilo app de banco) ===== */
+body.na-home #barra-mes { display:none; }
+.main-balance-card { padding:16px 16px 14px; }
+.hero-top { display:flex; justify-content:space-between; align-items:center; }
+.hero-meses { display:flex; align-items:center; gap:18px; }
+.hero-mes { background:none; border:0; color:rgba(255,255,255,.65); font-size:.9rem; font-weight:600; padding:2px 0; }
+#hero-mes-atual { color:#fff; font-size:1.05rem; border-bottom:2px solid #fff; padding-bottom:2px; }
+.main-balance-card h1 { font-size:1.9rem; }
+.hero-detalhes { color:#fff; font-size:.85rem; font-weight:600; cursor:pointer; text-decoration:none; white-space:nowrap; }
+.hero-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+.hero-tile { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.17); border-radius:14px; padding:10px 12px; min-width:0; }
+.hero-tile > i { width:30px; height:30px; flex:0 0 30px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.hero-tile:nth-child(1) > i { color:#10b981; } .hero-tile:nth-child(2) > i { color:#e94560; }
+.hero-tile small { display:block; font-size:.72rem; opacity:.85; } .hero-tile b { font-size:.95rem; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.home-sec-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; } .home-sec-head h6 { margin:0; font-weight:700; } .home-sec-head small { color:var(--purple); cursor:pointer; font-weight:600; }
+.h-scroll { display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; scroll-snap-type:x proximity; scrollbar-width:none; } .h-scroll::-webkit-scrollbar { display:none; } .h-scroll > * { scroll-snap-align:start; }
+.ic-box { width:32px; height:32px; flex:0 0 32px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:14px; } .ic-box.round { width:40px; height:40px; flex:0 0 40px; border-radius:50%; font-size:16px; }
+.prox-card { flex:0 0 215px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:12px; cursor:pointer; }
+.prox-top { display:flex; align-items:center; gap:8px; } .prox-top b { font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.prox-bot { display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-color); } .prox-bot b { font-size:.92rem; }
+.trans { display:flex; align-items:center; gap:12px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:11px 12px; margin-bottom:8px; cursor:pointer; }
+.trans-mid { flex:1; min-width:0; } .trans-mid b { display:block; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .trans-mid small { color:var(--text-muted); font-size:.75rem; }
+.trans-end { text-align:right; } .trans-end b { display:block; font-size:.95rem; } .trans-end small { color:var(--text-muted); font-size:.72rem; } .trans-go { color:var(--text-muted); font-size:.7rem; }
+
+/* ===== Cartões ===== */
+#home-lista-cartoes { display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none; } #home-lista-cartoes::-webkit-scrollbar { display:none; }
+#lista-cartoes { display:flex; flex-direction:column; gap:14px; }
+.fp-cartao { position:relative; flex:0 0 285px; min-height:178px; border-radius:22px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; box-shadow:0 12px 26px rgba(0,0,0,.22); }
+#lista-cartoes .fp-cartao { flex:none; width:100%; }
+.fp-deco { position:absolute; inset:0; border-radius:22px; overflow:hidden; pointer-events:none; }
+.fp-deco::before { content:''; position:absolute; width:190px; height:190px; border-radius:50%; background:rgba(255,255,255,.12); right:-60px; top:-80px; }
+.fp-deco::after { content:''; position:absolute; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,.08); right:40px; bottom:-70px; }
+.fp-cartao > *:not(.fp-deco) { position:relative; z-index:1; }
+.fp-c-top { display:flex; justify-content:space-between; align-items:flex-start; } .fp-c-nome { font-size:1.05rem; } .fp-sub { opacity:.8; font-size:.74rem; }
+.fp-bandeira { font-size:1.7rem; line-height:1; } .fp-band { font-size:.72rem; font-weight:800; letter-spacing:.05em; border:1px solid currentColor; border-radius:6px; padding:2px 6px; } .fp-menu { padding:6px; cursor:pointer; opacity:.9; }
+.fp-mid { margin:8px 0; } .fp-valor { font-size:1.55rem; font-weight:800; letter-spacing:-.02em; line-height:1.15; }
+.fp-pill { display:inline-block; margin-top:4px; background:rgba(255,255,255,.2); border-radius:999px; padding:2px 10px; font-size:.7rem; font-weight:600; }
+.fp-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.28); margin-bottom:6px; overflow:hidden; } .fp-bar > div { height:100%; border-radius:99px; background:currentColor; }
+.fp-novo { background:transparent !important; color:var(--purple) !important; border:2px dashed var(--purple); box-shadow:none; align-items:center; justify-content:center; gap:8px; min-height:178px; font-weight:700; }
+.fp-novo i { font-size:1.6rem; }
+@media (min-width:992px) { #lista-cartoes { display:grid; grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); } #lista-cartoes .fp-cartao { width:auto; } }
+
+/* ===== Início idêntica à referência: topo colorido + folha branca arredondada ===== */
+body.na-home .navbar-top,body.na-home #barra-mes { display:none; }
+#inicio .main-balance-card { margin:-16px -12px 0; border-radius:0; padding:calc(12px + env(safe-area-inset-top)) 16px 54px; box-shadow:none; }
+.hero-bar { display:flex; align-items:center; justify-content:space-between; gap:6px; }
+.hero-left,.hero-right { display:flex; align-items:center; min-width:76px; } .hero-right { justify-content:flex-end; }
+.hero-ic { position:relative; background:none; border:0; color:#fff; width:38px; height:38px; font-size:1.1rem; padding:0; }
+.hero-badge { position:absolute; top:3px; right:2px; min-width:16px; height:16px; border-radius:99px; background:#e94560; color:#fff; font-size:.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+.hero-badge.d-none { display:none !important; }
+.hero-saldo { position:relative; margin-top:16px; } .hero-saldo h1 { font-size:2rem; }
+#inicio .hero-detalhes { position:absolute; right:0; bottom:2px; }
+.home-sheet { position:relative; margin:-26px -12px 0; padding:18px 12px 8px; background:var(--bg-body); border-radius:26px 26px 0 0; }
+.home-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.home-tile { display:flex; align-items:center; gap:10px; background:var(--chip); border-radius:14px; padding:11px 12px; min-width:0; }
+.home-tile > i { font-size:1.15rem; } .home-tile:nth-child(1) > i { color:#10b981; } .home-tile:nth-child(2) > i { color:#e94560; }
+.home-tile small { display:block; font-size:.72rem; color:var(--text-muted); } .home-tile b { display:block; font-size:.98rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#acoes-rapidas { margin-bottom:4px; }
+@media (min-width:992px) { #inicio .main-balance-card { margin:0; border-radius:24px 24px 0 0; } .home-sheet { margin:-26px 0 0; } }
+/* cor alternativa (como na referência) */
+html[data-cor="verde"] { --purple:#16a34a; --chip:#e8f6ee; --hero:linear-gradient(135deg,#0a8f4d,#1ec677); }
+html[data-cor="verde"][data-bs-theme="dark"] { --chip:#16271e; }
+html[data-cor="verde"] .main-balance-card { background:linear-gradient(160deg,#0a8f4d 0%,#1ec677 100%) !important; }
+html[data-cor="verde"] .btn-add-main { background:#16a34a; box-shadow:0 8px 20px rgba(22,163,74,.35); }
+
+/* v12: esconder topo antigo na Início (o Bootstrap força d-flex com !important), menu ⋮ do cartão e botão X nas janelas */
+body.na-home .navbar-top, body.na-home #barra-mes { display:none !important; }
+.fp-c-top { z-index:5 !important; }
+.fp-menu-btn { background:rgba(255,255,255,.18); border:0; color:inherit; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0; }
+.fp-cartao .dropdown-menu { z-index:30; min-width:150px; }
+.fp-x { position:absolute; top:12px; right:12px; z-index:20; background-color:var(--chip); border-radius:50%; width:30px; height:30px; padding:0; opacity:1; background-size:10px; }
+
+/* ===== v13: mesmo design da Início em TODAS as telas ===== */
+.navbar-top, #barra-mes { display:none !important; }
+.fp-header { margin:-16px -12px 0; padding:calc(12px + env(safe-area-inset-top)) 16px 40px; color:#fff; background:linear-gradient(135deg,#6366f1 0%,#a855f7 100%); position:relative; overflow:hidden; }
+.fp-header::after { content:''; position:absolute; top:-50%; right:-20%; width:200px; height:200px; background:rgba(255,255,255,.1); border-radius:50%; pointer-events:none; }
+.fp-header > * { position:relative; z-index:1; }
+body.na-home .fp-header { display:none; }
+.fp-titulo { font-weight:700; font-size:1.1rem; text-align:center; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fp-meses-row { display:flex; justify-content:center; align-items:center; gap:22px; margin-top:12px; }
+.fp-mes-atual { color:#fff !important; font-size:1.05rem; border-bottom:2px solid #fff; padding-bottom:2px; }
+body:not(.na-home) .section.active { background:var(--bg-body); border-radius:26px 26px 0 0; margin:-26px -12px 0; padding:18px 12px 8px; position:relative; z-index:2; }
+.dia-titulo { font-size:.78rem; font-weight:700; color:var(--text-muted); text-transform:capitalize; margin:14px 2px 8px; }
+.card-mov { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; }
+@media (min-width:992px) { .fp-header { margin:0; border-radius:24px 24px 0 0; } body:not(.na-home) .section.active { margin:-26px 0 0; } }
+
+/* ===== v14: Dívidas compactas, ícones padronizados, calculadora flutuante ===== */
+.hero-left,.hero-right { min-width:114px; }
+#menuSidebar .dropdown-item i { color:var(--purple) !important; }
+.dropdown-menu .dropdown-item i { color:var(--text-muted) !important; width:18px; text-align:center; }
+.div-search { display:flex; align-items:center; gap:8px; background:var(--chip); border-radius:12px; padding:0 12px; height:40px; flex:1; min-width:0; }
+.div-search i { color:var(--text-muted); font-size:.85rem; } .div-search input { flex:1; min-width:0; border:0; background:transparent; outline:0; color:var(--text-main); font-size:.9rem; }
+#extrato .div-search { margin-bottom:12px; }
+.div-toolbar { display:flex; gap:8px; margin-bottom:10px; }
+.div-select { background:var(--chip); color:var(--text-main); border:0; border-radius:12px; height:40px; padding:0 6px; font-size:.8rem; max-width:112px; }
+.div-icon-btn { width:40px; height:40px; flex:0 0 40px; border:0; border-radius:12px; background:var(--chip); color:var(--purple); }
+.div-actions { display:flex; gap:8px; margin-bottom:12px; } .div-actions .btn { height:38px; font-size:.82rem; padding:0 12px; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+#dividas .nav-pills { background:var(--chip); border-radius:12px; padding:3px; }
+#dividas .nav-pills .nav-link { border-radius:10px; font-size:.85rem; padding:6px 0; color:var(--text-muted); } #dividas .nav-pills .nav-link.active { background:var(--purple); color:#fff; }
+#filtros-rapidos-status .btn-status-filter { border:0; border-radius:99px; font-size:.75rem; padding:3px 12px; background:var(--chip); color:var(--text-muted); } #filtros-rapidos-status .btn-status-filter.active { background:var(--purple); color:#fff; }
+.div-item { display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:9px 10px; }
+.div-av { width:36px; height:36px; flex:0 0 36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
+.div-av.pagar { background:rgba(233,69,96,.14); color:#e94560; } .div-av.receber { background:rgba(78,204,163,.18); color:#1f9d78; }
+.div-mid { flex:1; min-width:0; } .div-mid b { display:block; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.div-mid small { display:block; font-size:.72rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.chip-st { display:inline-block; margin-top:2px; font-size:.65rem; font-weight:700; border-radius:99px; padding:1px 8px; } .st-venc { background:rgba(233,69,96,.14); color:#e94560; } .st-hoje { background:rgba(245,158,11,.18); color:#b45309; }
+.div-val { text-align:right; font-weight:700; font-size:.92rem; white-space:nowrap; } .div-val small { display:block; font-size:.65rem; font-weight:400; color:var(--text-muted); }
+.div-hist summary { font-size:.7rem; color:var(--purple); cursor:pointer; } .div-hist div { white-space:pre-line; font-size:.72rem; color:var(--text-muted); }
+.div-item .dropdown > button { padding:4px 8px; color:var(--text-muted); }
+.aviso-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border-color); font-size:.9rem; } .aviso-item:last-child { border:0; } .aviso-item i { margin-top:3px; color:var(--purple); }
+#btn-calc-float { display:none !important; }
+#calc-bolha { position:fixed; z-index:1500; width:52px; height:52px; border-radius:50%; border:0; background:var(--purple); color:#fff; font-size:1.15rem; display:none; align-items:center; justify-content:center; box-shadow:0 8px 22px rgba(0,0,0,.3); }
+#calc-container { z-index:1500; }
+#calc-alvo { position:fixed; left:50%; bottom:96px; transform:translateX(-50%); z-index:1600; display:none; flex-direction:column; align-items:center; gap:4px; width:84px; height:84px; border-radius:50%; justify-content:center; background:rgba(233,69,96,.92); color:#fff; font-size:1.4rem; transition:transform .15s; }
+#calc-alvo small { font-size:.58rem; line-height:1.1; text-align:center; } #calc-alvo.ativo { transform:translateX(-50%) scale(1.18); background:#e94560; }
+
+/* ===== v15: menu inferior, botão Pix, Dívidas coloridas, botão "gastar por dia" ===== */
+.nav-btn { font-size:11px; }
+.nav-btn i { width:50px; height:30px; border-radius:15px; display:flex; align-items:center; justify-content:center; margin:0 auto 3px; font-size:18px; transition:background .25s,color .25s,transform .2s; }
+.nav-btn.active i { background:var(--chip); color:var(--purple); }
+.btn-add-main { width:60px; height:60px; border-radius:50%; margin-top:-34px; }
+.btn-add-main .pix-ico { width:30px; height:30px; display:block; }
+.btn-add-main:active { transform:scale(.9); }
+#dividas .nav-pills .nav-link[data-bs-target="#aba-eu-devo"].active { background:#e94560; color:#fff; }
+#dividas .nav-pills .nav-link[data-bs-target="#aba-me-devem"].active { background:#10b981; color:#fff; }
+#card-diario { background:transparent !important; border:0 !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.diario-btn { width:100%; display:flex; align-items:center; gap:10px; background:var(--chip); color:var(--text-main); border:0; border-radius:14px; padding:9px 12px; text-align:left; }
+.diario-ic { width:30px; height:30px; flex:0 0 30px; border-radius:10px; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
+.diario-tx { flex:1; font-size:.9rem; font-weight:600; } .diario-seta { color:var(--text-muted); font-size:.8rem; transition:transform .25s; }
+.diario-info { display:none; margin-top:8px; background:var(--bg-card); border:1px solid var(--border-color); border-left:4px solid var(--accent); border-radius:14px; padding:12px 14px; }
+#card-diario.aberto .diario-info { display:block; } #card-diario.aberto .diario-seta { transform:rotate(180deg); }
+
+/* ===== v16: formulários completos + clientes ===== */
+.mais-det { border:1px solid var(--border-color); border-radius:12px; padding:8px 12px; background:var(--chip); } .mais-det summary { font-size:.85rem; font-weight:600; color:var(--purple); cursor:pointer; }
+.compra-prev { font-size:.78rem; color:var(--text-muted); background:var(--chip); border-radius:10px; padding:8px 10px; } .compra-prev i { color:var(--purple); }
+.st-ativo { background:rgba(16,185,129,.15); color:#0f9d6b; } .st-lead { background:rgba(245,158,11,.18); color:#b45309; } .st-inativo { background:rgba(148,163,184,.22); color:var(--text-muted); }
+.cli-lin { display:flex; gap:10px; align-items:flex-start; font-size:.85rem; padding:3px 0; } .cli-lin i { width:16px; color:var(--purple); margin-top:3px; text-align:center; }
+.cli-obs { margin-top:8px; background:var(--chip); border-radius:10px; padding:8px 10px; font-size:.8rem; white-space:pre-line; }
+.cli-int { border-left:3px solid var(--purple); padding:2px 0 2px 10px; margin-bottom:6px; font-size:.82rem; }
+#cli-chips .btn-status-filter { border:0; border-radius:99px; font-size:.75rem; padding:3px 12px; background:var(--chip); color:var(--text-muted); white-space:nowrap; } #cli-chips .btn-status-filter.active { background:var(--purple); color:#fff; }
+.modal-dialog-scrollable .modal-body { overflow-y:auto; }
