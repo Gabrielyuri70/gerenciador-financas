@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6366f1">
+    <title>Finanças Pro - Ultra Edition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=18">
+    <link rel="stylesheet" href="tema.css?v=18">
+    
+    <link rel="icon" type="image/jpeg" href="img/perfil.jpg">
+    <link rel="apple-touch-icon" href="img/perfil.jpg">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body data-bs-theme="light">
+
+    <div id="tela-login">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <div class="avatar-login-container mb-3">
+                    <img src="img/perfil.jpg" alt="Foto de Perfil" class="avatar-login">
+                </div>
+                <h4 class="fw-bold">Finanças Pro</h4>
+                <p class="text-muted small">Sua gestão financeira inteligente</p>
+            </div>
+            
+            <div id="login-form">
+                <div class="mb-3">
+                    <label class="small fw-bold">Usuário</label>
+                    <input type="text" id="user-login" class="form-control" placeholder="Digite seu usuário">
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="pass-login" class="form-control" placeholder="••••••••">
+                        <i class="fas fa-eye password-toggle" onclick="toggleSenha('pass-login', this)"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="lembrar-login">
+                        <label class="form-check-label small" for="lembrar-login">Lembrar-me</label>
+                    </div>
+                    <button type="button" class="btn btn-link btn-sm text-decoration-none p-0" onclick="toggleAuth('recovery')">Esqueci a senha</button>
+                </div>
+                <button class="btn btn-primary w-100 py-2 fw-bold mb-3" onclick="fazerLogin()">Entrar</button>
+                <div class="text-center">
+                    <button class="btn btn-link btn-sm text-purple text-decoration-none" onclick="toggleAuth('register')">Criar nova conta</button>
+                    <hr>
+                    <button class="btn btn-outline-secondary btn-sm w-100" onclick="entrarVisitante()">Entrar sem acesso (Visitante)</button>
+                </div>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <div class="mb-3">
+                    <label class="small fw-bold">Definir Usuário</label>
+                    <input type="text" id="user-reg" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Definir Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="pass-reg" class="form-control">
+                        <i class="fas fa-eye password-toggle" onclick="toggleSenha('pass-reg', this)"></i>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Pergunta de Segurança</label>
+                    <select id="pergunta-reg" class="form-select">
+                        <option value="Nome do seu primeiro pet?">Nome do seu primeiro pet?</option>
+                        <option value="Cidade onde nasceu?">Cidade onde nasceu?</option>
+                        <option value="Nome da sua mãe?">Nome da sua mãe?</option>
+                        <option value="Sua cor favorita?">Sua cor favorita?</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Resposta de Segurança</label>
+                    <input type="text" id="resposta-reg" class="form-control" placeholder="Sua resposta">
+                </div>
+                <button class="btn btn-success w-100 py-2 fw-bold mb-2" onclick="cadastrarUsuario()">Criar Acesso</button>
+                <button class="btn btn-link btn-sm w-100 text-decoration-none" onclick="toggleAuth('login')">Voltar ao login</button>
+            </div>
+
+            <div id="recovery-form" style="display: none;">
+                <div id="step-1-recovery">
+                    <div class="mb-3">
+                        <label class="small fw-bold">Informe seu Usuário</label>
+                        <input type="text" id="user-rec" class="form-control">
+                    </div>
+                    <button class="btn btn-primary w-100 mb-2" onclick="verificarUsuarioRecuperacao()">Verificar Usuário</button>
+                </div>
+                <div id="step-2-recovery" style="display: none;">
+                    <div class="mb-3">
+                        <label class="small fw-bold text-primary" id="txt-pergunta-exibida"></label>
+                        <input type="text" id="resposta-rec" class="form-control" placeholder="Sua resposta">
+                    </div>
+                    <button class="btn btn-primary w-100 mb-2" onclick="validarRespostaSeguranca()">Validar Resposta</button>
+                </div>
+                <div id="step-3-recovery" style="display: none;">
+                    <div class="mb-3">
+                        <label class="small fw-bold">Nova Senha</label>
+                        <div class="password-container">
+                            <input type="password" id="nova-pass-rec" class="form-control">
+                            <i class="fas fa-eye password-toggle" onclick="toggleSenha('nova-pass-rec', this)"></i>
+                        </div>
+                    </div>
+                    <button class="btn btn-success w-100 mb-2" onclick="redefinirSenha()">Alterar Senha</button>
+                </div>
+                <button class="btn btn-link btn-sm w-100 text-decoration-none" onclick="toggleAuth('login')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+<nav class="navbar-top d-flex justify-content-between align-items-center">
+    <button class="btn text-main" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar"><i class="fas fa-bars"></i></button>
+    <span class="fw-bold tracking-tight">FINANÇAS PRO</span>
+    <div class="d-flex gap-2">
+        <button class="btn text-main p-1 position-relative" onclick="abrirNotificacoes()">
+            <i class="fas fa-bell"></i>
+            <span id="badge-notificacao" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.5rem;">
+                0
+            </span>
+        </button>
+        <button class="btn text-main p-1" onclick="toggleTema()"><i id="btn-tema" class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start" id="menuSidebar" style="width: 280px;">
+<div class="offcanvas-header border-bottom d-flex flex-column align-items-stretch pt-4 pb-3 px-3" style="background: rgba(138, 43, 226, 0.04); position: relative;">
+    <div class="d-flex justify-content-end w-100 mb-2">
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" style="font-size: 0.85rem;"></button>
+    </div>
+    <div class="d-flex align-items-center gap-3 sidebar-user-box" style="cursor: pointer;" onclick="showSection('aba-perfil')" data-bs-dismiss="offcanvas">
+        <i class="fas fa-user-circle text-muted d-flex align-items-center justify-content-center bg-white rounded-circle border border-2 border-purple shadow-sm" style="width: 54px; height: 54px; font-size: 54px;"></i>
+        <div class="overflow-hidden">
+            <small class="text-muted d-block" style="font-size: 0.75rem; letter-spacing: 0.02em;">Seja bem-vindo(a),</small>
+            <b id="txt-nome-usuario-sidebar" class="d-block text-truncate text-main" style="font-size: 1.05rem;">Visitante</b>
+        </div>
+        <i class="fas fa-chevron-right text-muted small ms-auto pe-1"></i>
+    </div>
+</div>
+
+        <div class="offcanvas-body p-0">
+<div class="menu-titulo">Principal</div>
+<button class="menu-item" onclick="showSection('aba-clientes')" data-bs-dismiss="offcanvas"><i class="fas fa-users"></i><span>Clientes</span></button>
+<button class="menu-item" onclick="showSection('metas')" data-bs-dismiss="offcanvas"><i class="fas fa-bullseye"></i><span>Metas de Poupança</span></button>
+<button class="menu-item" onclick="showSection('aba-notas')" data-bs-dismiss="offcanvas"><i class="fas fa-sticky-note"></i><span>Bloco de Notas</span></button>
+<button class="menu-item" onclick="showSection('aba-revenda')" data-bs-dismiss="offcanvas"><i class="fas fa-boxes-packing"></i><span>Controle de Revenda</span></button>
+<div class="menu-titulo">Análises</div>
+<button class="menu-item" onclick="showSection('aba-anual')" data-bs-dismiss="offcanvas"><i class="fas fa-calendar-days"></i><span>Visão Anual</span></button>
+<button class="menu-item" onclick="showSection('aba-graficos')" data-bs-dismiss="offcanvas"><i class="fas fa-chart-pie"></i><span>Análise de Gastos (Gráficos)</span></button>
+<button class="menu-item" onclick="showSection('aba-comparar')" data-bs-dismiss="offcanvas"><i class="fas fa-code-compare"></i><span>Comparar com mês anterior</span></button>
+<button class="menu-item" onclick="showSection('aba-previsao')" data-bs-dismiss="offcanvas"><i class="fas fa-forward"></i><span>Previsão e Reserva</span></button>
+<button class="menu-item" onclick="showSection('aba-orcamento')" data-bs-dismiss="offcanvas"><i class="fas fa-gauge-high"></i><span>Orçamento por Categoria</span></button>
+<div class="menu-titulo">Planejamento</div>
+<button class="menu-item" onclick="showSection('aba-fixos')" data-bs-dismiss="offcanvas"><i class="fas fa-rotate"></i><span>Contas Fixas</span></button>
+<button class="menu-item" onclick="showSection('aba-simulador')" data-bs-dismiss="offcanvas"><i class="fas fa-calculator"></i><span>Simulador de Parcelas</span></button>
+<button class="menu-item" onclick="showSection('aba-quitar')" data-bs-dismiss="offcanvas"><i class="fas fa-list-ol"></i><span>Ordem para quitar dívidas</span></button>
+<button class="menu-item" onclick="abrirCalcFlutuante()" data-bs-dismiss="offcanvas"><i class="fas fa-calculator"></i><span>Calculadora</span></button>
+<div class="menu-titulo">Sistema</div>
+<button class="menu-item" onclick="exportarBackup()"><i class="fas fa-cloud-download-alt"></i><span>Exportar Dados</span></button>
+<button class="menu-item" onclick="abrirImportar()"><i class="fas fa-cloud-upload-alt"></i><span>Importar Dados</span></button>
+<button class="menu-item" onclick="exportarCSV()"><i class="fas fa-file-csv"></i><span>Extrato do mês (CSV)</span></button>
+<button class="menu-item" onclick="baixarCalendario()"><i class="far fa-calendar-check"></i><span>Calendário (.ics)</span></button>
+<button class="menu-item" onclick="alternarCorApp()"><i class="fas fa-palette"></i><span>Cor do app (roxo / verde)</span></button>
+<button class="menu-item" onclick="configurarPin()"><i class="fas fa-lock"></i><span>PIN de bloqueio</span></button>
+<button class="menu-item" onclick="showSection('aba-sobre')" data-bs-dismiss="offcanvas"><i class="fas fa-info-circle"></i><span>Sobre o Aplicativo</span></button>
+<button class="menu-item menu-danger" onclick="showSection('lixeira')" data-bs-dismiss="offcanvas"><i class="fas fa-trash"></i><span>Lixeira</span></button>
+<button class="menu-item" onclick="sairApp()"><i class="fas fa-sign-out-alt"></i><span>Sair do Perfil</span></button>
+<button class="menu-item menu-danger" onclick="resetarApp()"><i class="fas fa-power-off"></i><span>Zerar Tudo</span></button>
+<div id="lista-notificacoes" class="d-none"></div>
+</div>
+</div>
+<main class="container py-3">
+
+    <div id="barra-mes" class="d-flex align-items-center justify-content-center gap-2 mb-4 mx-auto style-calendario-topo" style="max-width: 320px;">
+        <button id="btn-mes-anterior" class="btn btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;" onclick="alterarMesNav(-1)">
+            <i class="fas fa-chevron-left text-purple"></i>
+        </button>
+        
+        <div class="position-relative flex-grow-1 text-center d-flex align-items-center justify-content-center bg-light rounded-pill px-3 py-1 shadow-sm border">
+            <i class="fas fa-calendar-day text-purple me-2"></i>
+            <input type="month" id="mes-atual" class="form-control form-control-sm border-0 bg-transparent fw-bold text-center p-0 shadow-none" style="cursor: pointer; width: 140px; font-size: 1.05rem;">
+        </div>
+
+        <button id="btn-mes-proximo" class="btn btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;" onclick="alterarMesNav(1)">
+            <i class="fas fa-chevron-right text-purple"></i>
+        </button>
+    </div>
+<div id="fp-header" class="fp-header">
+            <div class="hero-bar">
+                <div class="hero-left">
+                    <button class="hero-ic" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar"><i class="fas fa-bars"></i></button>
+                    <button class="hero-ic" onclick="abrirNotificacoes()"><i class="fas fa-bell"></i><span id="fp-badge" class="hero-badge d-none">0</span></button>
+                </div>
+                <div id="fp-titulo" class="fp-titulo"></div>
+                <div class="hero-right">
+                    <button class="hero-ic calc-dock-btn" onclick="abrirCalcFlutuante()" title="Calculadora"><i class="fas fa-calculator"></i></button>
+                        <button class="hero-ic" onclick="abrirCalendarioMes2()"><i class="fas fa-calendar-days"></i></button>
+                    <button class="hero-ic" onclick="toggleTema()"><i class="fas fa-moon"></i></button>
+                    <input type="month" id="fp-mes-input" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" tabindex="-1">
+                </div>
+            </div>
+            <div id="fp-meses-row" class="fp-meses-row"><button class="hero-mes" id="fp-mes-ant" onclick="alterarMesNav(-1)">Out</button><b id="fp-mes-atual" class="hero-mes fp-mes-atual">Nov</b><button class="hero-mes" id="fp-mes-prox" onclick="alterarMesNav(1)">Dez</button></div>
+        </div>
+
+        <div id="inicio" class="section active">
+            <div class="main-balance-card">
+                <div class="hero-bar">
+                    <div class="hero-left">
+                        <button class="hero-ic" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar"><i class="fas fa-bars"></i></button>
+                        <button class="hero-ic" onclick="abrirNotificacoes()"><i class="fas fa-bell"></i><span id="hero-badge" class="hero-badge d-none">0</span></button>
+                    </div>
+                    <div class="hero-meses"><button class="hero-mes" id="hero-mes-ant" onclick="alterarMesNav(-1)">Out</button><b id="hero-mes-atual" class="hero-mes">Nov</b><button class="hero-mes" id="hero-mes-prox" onclick="alterarMesNav(1)">Dez</button></div>
+                    <div class="hero-right">
+                        <button class="hero-ic calc-dock-btn" onclick="abrirCalcFlutuante()" title="Calculadora"><i class="fas fa-calculator"></i></button>
+                        <button class="hero-ic" onclick="abrirCalendarioMes()"><i class="fas fa-calendar-days"></i></button>
+                        <button class="hero-ic" onclick="toggleTema()"><i class="fas fa-moon"></i></button>
+                        <input type="month" id="hero-mes-input" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" tabindex="-1">
+                    </div>
+                </div>
+                <div class="hero-saldo">
+                    <div class="d-flex justify-content-between align-items-center"><small class="opacity-80">Saldo do mês</small><span id="hero-seq"></span></div>
+                    <div class="d-flex align-items-center gap-2"><div><h1 class="fw-bold mb-0 money-value" id="txt-saldo-geral">R$ 0,00</h1></div>
+                        <button id="btn-olho" class="btn text-white p-1" onclick="toggleVisibilidade()"><i class="fas fa-eye"></i></button></div>
+                    <small class="opacity-75 d-block" id="hero-atualizado"></small>
+                    <a class="hero-detalhes" onclick="showSection('extrato')">Detalhes ›</a>
+                </div>
+            </div>
+
+            <div id="home-sheet" class="home-sheet">
+                <div class="home-tiles">
+                    <div class="home-tile"><i class="fas fa-arrow-trend-up"></i><div><small>Ganhos</small><b class="money-value" id="txt-entradas">R$ 0,00</b></div></div>
+                    <div class="home-tile"><i class="fas fa-arrow-trend-down"></i><div><small>Gastos</small><b class="money-value" id="txt-saidas">R$ 0,00</b></div></div>
+                </div>
+
+                <div class="mb-4" id="home-prox-wrap">
+                    <div class="home-sec-head"><h6>Próximos lançamentos</h6><small onclick="showSection('aba-previsao')">Ver previsão</small></div>
+                    <div id="home-proximos" class="h-scroll"></div>
+                </div>
+
+                
+
+                <div class="mb-3">
+                    <div class="home-sec-head"><h6>Últimas transações</h6><small onclick="showSection('extrato')">Ver tudo</small></div>
+                    <div id="lista-recente"></div></div></div>
+        </div>
+
+                <div id="extrato" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Movimentações</h4>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light border" data-bs-toggle="dropdown"><i class="fas fa-filter"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" type="button" onclick="setFiltro('todos')">Movimentações</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="setFiltro('fatura')">Faturas de cartão</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="setFiltro('tudo')">Tudo (com faturas)</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="setFiltro('entrada')">Entradas</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="setFiltro('saida')">Saídas</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="div-search"><i class="fas fa-magnifying-glass"></i><input type="text" placeholder="Buscar descrição ou categoria" oninput="filtrarBusca(this.value)"></div>
+            </div>
+            <div id="lista-extrato"></div>
+        </div>
+        <div id="cartoes" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Meus Cartões</h4>
+                <button class="btn btn-sm btn-purple text-white" style="background:var(--purple)" onclick="abrirModalCartao()">+ Novo</button>
+            </div>
+            <div id="lista-cartoes"></div>
+        </div>
+
+        <div id="compras-cartao" class="section">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <button class="btn p-0" onclick="showSection('cartoes')"><i class="fas fa-arrow-left"></i></button>
+                <h4 class="fw-bold mb-0" id="titulo-compras-cartao">Compras no Cartão</h4>
+            </div>
+            <div id="info-cartao-detalhe"></div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Histórico de Fatura</h6>
+                <button class="btn btn-purple btn-sm text-white" style="background:var(--purple)" onclick="abrirModalCompraCartao()">+ Adicionar Compra</button>
+            </div>
+            <div id="lista-compras-cartao"></div>
+        </div>
+
+        <div id="dividas" class="section">
+            <div class="home-tiles">
+                <div class="home-tile"><i class="fas fa-arrow-up-long" style="color:#e94560"></i><div><small>A pagar</small><b class="money-value" id="total-eu-devo">R$ 0,00</b></div></div>
+                <div class="home-tile"><i class="fas fa-arrow-down-long" style="color:#10b981"></i><div><small>A receber</small><b class="money-value" id="total-me-devem">R$ 0,00</b></div></div>
+            </div>
+            <div class="div-actions">
+                <button class="btn btn-primary flex-grow-1" onclick="abrirModalDivida()"><i class="fas fa-plus"></i> Adicionar registro</button>
+                <button class="btn btn-outline-primary" onclick="baixarCalendario()"><i class="far fa-calendar-check"></i> Sincronizar calendário</button>
+            </div>
+            <div class="div-toolbar">
+                <div class="div-search"><i class="fas fa-magnifying-glass"></i><input type="text" id="busca-divida" placeholder="Buscar por nome"></div>
+                <select id="ordenar-divida" class="div-select" onchange="tratarFiltroEOrdenacao(this.value)">
+                    <optgroup label="Status"><option value="status-todas" selected>Todas</option><option value="status-pendentes">Pendentes</option><option value="status-vencidas">Vencidas</option></optgroup>
+                    <optgroup label="Ordenação"><option value="data-recente">Mais recentes</option><option value="data-antiga">Mais antigas</option><option value="alfa-crescente">A - Z</option><option value="alfa-decrescente">Z - A</option></optgroup>
+                </select>
+                <button class="div-icon-btn" title="Limpar filtros" onclick="limparFiltrosDivida()"><i class="fas fa-filter-circle-xmark"></i></button>
+            </div>
+            <div id="filtros-status-divida" class="d-none"></div>
+            <ul class="nav nav-pills nav-fill mb-2" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#aba-eu-devo" type="button" role="tab" aria-controls="aba-eu-devo" aria-selected="true">A pagar</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#aba-me-devem" type="button" role="tab" aria-controls="aba-me-devem" aria-selected="false">A receber</button></li>
+            </ul>
+            <div class="d-flex gap-2 overflow-x-auto pb-2 clip-scroll mb-1" id="filtros-rapidos-status">
+                <button class="btn btn-sm btn-status-filter active" onclick="tratarFiltroEOrdenacao('status-todas')">Todas</button>
+                <button class="btn btn-sm btn-status-filter" onclick="tratarFiltroEOrdenacao('status-pendentes')">Pendentes</button>
+                <button class="btn btn-sm btn-status-filter" onclick="tratarFiltroEOrdenacao('status-vencidas')">Vencidas</button>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="aba-eu-devo"><div id="lista-eu-devo" class="d-flex flex-column gap-2"></div></div>
+                <div class="tab-pane fade" id="aba-me-devem"><div id="lista-me-devem" class="d-flex flex-column gap-2"></div></div>
+            </div>
+            <div class="mt-4 pt-3">
+                <h6 class="fw-bold mb-2 text-muted text-uppercase" style="font-size:.72rem;letter-spacing:.05em"><i class="fas fa-clock-rotate-left me-1"></i> Quitadas nos últimos 30 dias</h6>
+                <div id="lista-historico-dividas"></div>
+            </div>
+        </div>
+                <div id="metas" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Metas de Poupança</h4>
+                <button class="btn btn-purple btn-sm text-white" style="background:var(--purple)" data-bs-toggle="modal" data-bs-target="#modalMeta">+ Nova Meta</button>
+            </div>
+            <div id="lista-metas" class="row g-3"></div>
+        </div>
+                        <div id="lixeira" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Lixeira</h4>
+                <button class="btn btn-sm btn-outline-danger" onclick="esvaziarLixeira()">Limpar Tudo</button>
+            </div>
+            <div id="lista-lixeira"></div>
+        </div>
+
+        <div id="aba-perfil" class="section">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button>
+                <h4 class="fw-bold mb-0">Meu Perfil</h4>
+            </div>
+
+            <div class="card p-4 border-0 shadow-sm rounded-4 mb-4">
+                <div class="text-center mb-4">
+                    <div class="position-relative d-inline-block">
+                        <i class="fas fa-user-circle text-muted d-flex align-items-center justify-content-center bg-white rounded-circle border border-3 border-purple shadow mx-auto" style="width: 90px; height: 90px; font-size: 90px;"></i>
+                    </div>
+                    <h5 id="txt-perfil-nome-exibicao" class="fw-bold mt-3 mb-1">Nome do Usuário</h5>
+                    <p class="text-muted small">Gerencie suas credenciais de acesso</p>
+                </div>
+
+                <hr class="opacity-25 my-3">
+
+                <div class="mb-4"><label class="small fw-bold text-muted">Senha atual (obrigatória para salvar)</label><div class="password-container"><input type="password" id="senha-atual-perfil" class="form-control" placeholder="••••••••"><i class="fas fa-eye password-toggle" onclick="toggleSenha('senha-atual-perfil', this)"></i></div></div>
+                <div class="mb-4">
+                    <h6 class="fw-bold text-purple mb-3"><i class="fas fa-user-edit me-2"></i>Alterar Usuário</h6>
+                    <div class="mb-2">
+                        <label class="small fw-bold text-muted">Novo Nome de Usuário</label>
+                        <input type="text" id="novo-user-perfil" class="form-control" placeholder="Digite o novo usuário">
+                    </div>
+                </div>
+
+                <hr class="opacity-25 my-3">
+
+                <div>
+                    <h6 class="fw-bold text-purple mb-3"><i class="fas fa-key me-2"></i>Alterar Senha</h6>
+                    <div class="mb-3">
+                        <label class="small fw-bold text-muted">Nova Senha</label>
+                        <div class="password-container">
+                            <input type="password" id="nova-pass-perfil" class="form-control" placeholder="••••••••">
+                            <i class="fas fa-eye password-toggle" onclick="toggleSenha('nova-pass-perfil', this)"></i>
+                        </div>
+                    </div>
+                    <button class="btn btn-purple btn-sm w-100 py-2 fw-bold" style="background:var(--purple)" onclick="atualizarPerfilUsuario()">
+                        Atualizar Perfil
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aba-sobre" class="section">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button>
+                <h4 class="fw-bold mb-0">Sobre o Aplicativo</h4>
+            </div>
+            
+            <div class="card p-4 border-0 shadow-sm rounded-4 text-center mb-4">
+                <div class="icon-box bg-primary text-white mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px; border-radius: 22px;">
+                    <i class="fas fa-wallet fa-2x"></i>
+                </div>
+                <h4 class="fw-bold mb-1">Finanças Pro</h4>
+                <p class="text-muted small mb-3">Versão Ultra Edition 2026</p>
+                <p class="px-2">O <b>Finanças Pro</b> é uma plataforma inteligente e moderna desenvolvida para simplificar o controle dos seus gastos, receitas, cartões de crédito e metas financeiras pessoais.</p>
+                
+                <hr class="my-4 opacity-25">
+                
+                <h6 class="fw-bold mb-3">Conecte-se comigo</h6>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="https://www.instagram.com/_gabrielyuri70" target="_blank" class="btn btn-outline-danger px-4 rounded-3 d-flex align-items-center gap-2">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://www.tiktok.com/@_gabrielyuri70" target="_blank" class="btn btn-outline-dark px-4 rounded-3 d-flex align-items-center gap-2">
+                        <i class="fab fa-tiktok"></i> TikTok
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="aba-notas" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">Minhas Notas</h4>
+                <button class="btn btn-purple btn-sm text-white" style="background:var(--purple)" onclick="abrirModalNota()">
+                    <i class="fas fa-plus me-1"></i> Nova Nota
+                </button>
+            </div>
+
+            <div id="container-notas-fixadas" class="mb-4 d-none">
+                <small class="text-muted fw-bold text-uppercase mb-2 d-block" style="font-size: 0.7rem;">Fixadas</small>
+                <div id="lista-notas-fixadas" class="row g-2"></div>
+            </div>
+
+            <div id="container-notas-geral">
+                <small id="titulo-outras-notas" class="text-muted fw-bold text-uppercase mb-2 d-none" style="font-size: 0.7rem;">Outras</small>
+                <div id="lista-notas" class="row g-2"></div>
+            </div>
+
+            <div id="notas-vazio" class="text-center py-5 opacity-50">
+                <i class="fas fa-pen-nib fa-3x mb-3"></i>
+                <p>Nenhuma anotação por enquanto.</p>
+            </div>
+        </div>
+
+        <div id="aba-clientes" class="section secao-app">
+            <div class="home-tiles">
+                <div class="home-tile"><i class="fas fa-users" style="color:var(--purple)"></i><div><small>Clientes ativos</small><b id="cli-total">0</b></div></div>
+                <div class="home-tile"><i class="fas fa-hand-holding-dollar" style="color:#e94560"></i><div><small>A receber</small><b class="money-value" id="cli-aberto">R$ 0,00</b></div></div>
+            </div>
+            <div class="div-actions">
+                <button class="btn btn-primary flex-grow-1" onclick="abrirModalCliente()"><i class="fas fa-user-plus"></i> Novo cliente</button>
+                <button class="btn btn-outline-primary" onclick="exportarClientesCSV()"><i class="fas fa-file-csv"></i> Exportar</button>
+            </div>
+            <div class="div-toolbar"><div class="div-search"><i class="fas fa-magnifying-glass"></i><input type="text" id="busca-cliente" placeholder="Buscar nome, telefone, e-mail..." oninput="renderClientes()"></div></div>
+            <div id="cli-chips" class="d-flex gap-2 overflow-x-auto pb-2 clip-scroll mb-2"><button class="btn btn-sm btn-status-filter active" data-f="todos" onclick="setCliFiltro('todos')">Todos</button><button class="btn btn-sm btn-status-filter" data-f="ativo" onclick="setCliFiltro('ativo')">Ativos</button><button class="btn btn-sm btn-status-filter" data-f="lead" onclick="setCliFiltro('lead')">Leads</button><button class="btn btn-sm btn-status-filter" data-f="inativo" onclick="setCliFiltro('inativo')">Inativos</button><button class="btn btn-sm btn-status-filter" data-f="devendo" onclick="setCliFiltro('devendo')">Devendo</button><button class="btn btn-sm btn-status-filter" data-f="niver" onclick="setCliFiltro('niver')">Aniversariantes</button></div>
+            <div id="lista-clientes" class="d-flex flex-column gap-2"></div>
+        </div>
+
+        <div id="aba-comparar" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Comparar com mês anterior</h4></div><p class="text-muted small">Usa o mês selecionado no topo do app.</p><div id="comp-lista"></div></div>
+
+        <div id="aba-quitar" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Ordem para quitar dívidas</h4></div><div class="d-flex gap-2 mb-2"><button id="quit-menor" class="btn btn-primary btn-sm flex-fill" onclick="setEstQuitar('menor')">Menor valor primeiro</button><button id="quit-prazo" class="btn btn-outline-primary btn-sm flex-fill" onclick="setEstQuitar('prazo')">Vencimento mais próximo</button><button id="quit-juros" class="btn btn-outline-primary btn-sm flex-fill" onclick="setEstQuitar('juros')">Maior juros</button></div><p class="text-muted small">Menor valor primeiro elimina parcelas rápido (bola de neve); vencimento evita atrasos. O app não registra juros: se alguma dívida tem juros altos, priorize essa.</p><div id="quit-lista"></div></div>
+
+        <div id="aba-previsao" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Previsão e Reserva</h4></div><div id="prev-reserva" class="card border-0 shadow-sm rounded-4 p-3 mb-3"></div><h6 class="fw-bold">Próximos 6 meses <small class="text-muted fw-normal">(fixos + parcelas + dívidas + lançamentos futuros)</small></h6><div id="prev-lista"></div></div>
+
+        <div id="aba-simulador" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Simulador de Parcelas</h4></div><div class="card border-0 shadow-sm rounded-4 p-3 mb-3"><label class="small fw-bold">Valor da compra (R$)</label><input type="number" id="sim-valor" inputmode="decimal" class="form-control mb-2"><div class="row g-2"><div class="col-6"><label class="small fw-bold">Parcelas</label><input type="number" id="sim-parc" class="form-control" min="1" max="48" value="10"></div><div class="col-6"><label class="small fw-bold">Juros ao mês (%)</label><input type="number" id="sim-juros" inputmode="decimal" class="form-control" value="0"></div></div><button class="btn btn-primary w-100 mt-3 py-2" onclick="simular()">Simular impacto</button></div><div id="sim-resultado"></div></div>
+
+        <div id="aba-orcamento" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Orçamento por Categoria</h4></div><p class="text-muted small">Defina um limite mensal por categoria. Você recebe aviso aos 80% e ao estourar.</p><div id="orc-lista"></div></div>
+
+        <div id="aba-fixos" class="section secao-app"><div class="d-flex align-items-center gap-2 mb-3"><button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button><h4 class="fw-bold mb-0">Contas Fixas</h4></div><div id="fixos-resumo" class="row g-2 mb-3"></div><div id="fixos-lista"></div></div>
+
+        <div id="aba-anual" class="section secao-app">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button>
+                <h4 class="fw-bold mb-0 flex-grow-1">Visão Anual</h4>
+                <button class="btn btn-sm" onclick="mudarAnoAnual(-1)"><i class="fas fa-chevron-left"></i></button><b id="anual-ano">2026</b><button class="btn btn-sm" onclick="mudarAnoAnual(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div id="anual-cards" class="row g-2 mb-3"></div>
+            <div class="card border-0 shadow-sm rounded-4 p-3 mb-3"><canvas id="grafico-anual" height="230"></canvas></div>
+            <h6 class="fw-bold">Mês a mês <small class="text-muted fw-normal">(toque para abrir o extrato)</small></h6><div id="anual-meses" class="mb-3"></div>
+            <h6 class="fw-bold">Onde você mais gastou</h6><div id="anual-cats"></div>
+        </div>
+
+        <div id="aba-graficos" class="section secao-app">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <button class="btn p-0" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button>
+                <h4 class="fw-bold mb-0">Movimentações detalhadas por categoria</h4>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="card p-3 shadow-sm border-0 rounded-4 chart-detalhado-container">
+                        <canvas id="chartGastos"></canvas>
+                        <div class="chart-center-info">
+                            <small class="text-muted d-block text-uppercase" style="font-size: 0.65rem;">Balanço</small>
+                            <span id="txt-balanco-grafico" class="fw-bold text-dark fs-5 money-value">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-12 col-md-6">
+                    <div class="card p-3 shadow-sm border-0 rounded-4 h-100">
+                        <h6 class="fw-bold mb-3 text-uppercase text-center" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--purple);">Legenda Completa</h6>
+                        <div id="legenda-grafico-html" class="list-group list-group-flush gap-2" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="aba-revenda" class="section">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn p-0 text-main" onclick="showSection('inicio')"><i class="fas fa-arrow-left"></i></button>
+                    <h4 class="fw-bold mb-0">Controle de Revenda</h4>
+                </div>
+                <button class="btn btn-purple btn-sm text-white" style="background:var(--purple)" onclick="abrirModalRevenda()">+ Novo Produto</button>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="card p-3 border-0 shadow-sm rounded-4 text-center bg-card">
+                        <small class="text-muted d-block">Previsão de Vendas</small>
+                        <b class="text-primary fs-5" id="total-venda-revenda">R$ 0,00</b>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card p-3 border-0 shadow-sm rounded-4 text-center bg-card">
+                        <small class="text-muted d-block">Lucro Total Estimado</small>
+                        <b class="text-success fs-5" id="lucro-total-revenda">R$ 0,00</b>
+                    </div>
+                </div>
+            </div>
+
+            <div id="lista-produtos-revenda" class="row g-2"></div>
+
+            <div id="revenda-vazio" class="text-center py-5 opacity-50">
+                <i class="fas fa-boxes-packing fa-3x mb-3 text-muted"></i>
+                <p>Nenhum produto em estoque para revenda.</p>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showSection('inicio', this)"><i class="fas fa-house"></i>Início</button>
+        <button class="nav-btn" onclick="showSection('extrato', this)"><i class="fas fa-file-invoice-dollar"></i>Extrato</button>
+        <div class="btn-add-main" data-bs-toggle="modal" data-bs-target="#modalMov" onclick="abrirModalMov()" role="button" aria-label="Novo lançamento"><svg class="pix-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.283 18.36a3.5 3.5 0 0 0 2.493-1.032l3.6-3.6a.684.684 0 0 1 .946 0l3.613 3.613a3.5 3.5 0 0 0 2.493 1.032h.71l-4.56 4.56a3.647 3.647 0 0 1-5.156 0L4.85 18.36ZM18.428 5.627a3.5 3.5 0 0 0-2.493 1.032l-3.613 3.614a.67.67 0 0 1-.946 0l-3.6-3.6A3.5 3.5 0 0 0 5.283 5.64h-.434l4.573-4.572a3.646 3.646 0 0 1 5.156 0l4.559 4.559ZM1.068 9.422 3.79 6.699h1.492a2.48 2.48 0 0 1 1.744.722l3.6 3.6a1.73 1.73 0 0 0 2.443 0l3.614-3.613a2.48 2.48 0 0 1 1.744-.723h1.767l2.737 2.737a3.646 3.646 0 0 1 0 5.156l-2.736 2.736h-1.768a2.48 2.48 0 0 1-1.744-.722l-3.613-3.613a1.77 1.77 0 0 0-2.444 0l-3.6 3.6a2.48 2.48 0 0 1-1.744.722H3.791l-2.723-2.723a3.646 3.646 0 0 1 0-5.156"/></svg></div>
+        <button class="nav-btn" onclick="showSection('cartoes', this)"><i class="fas fa-credit-card"></i>Cartões</button>
+        <button class="nav-btn" onclick="showSection('dividas', this)"><i class="fas fa-hand-holding-dollar"></i>Dívidas</button>
+    </nav>
+
+    <div class="modal fade" id="modalMov" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-4" id="modalMovTitulo">Novo Lançamento</h5>
+                    <input type="hidden" id="mov-id-edit">
+                    <div class="mb-3">
+                        <label class="small fw-bold">Descrição</label>
+                        <input type="text" id="mov-desc" class="form-control" placeholder="Ex: Mercado, Aluguel...">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-7">
+                            <label class="small fw-bold">Valor</label>
+                            <input type="text" id="mov-valor" class="form-control" placeholder="0,00" inputmode="numeric">
+                        </div>
+                        <div class="col-5">
+                            <label class="small fw-bold">Tipo</label>
+                            <select id="mov-tipo" class="form-select">
+                                <option value="saida">Despesas</option>
+                                <option value="entrada">Receitas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-bold">Categoria</label>
+                        <select id="mov-cat" class="form-select">
+                            <option>Mercado</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Salário</option><option>Outros</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+    <label class="small fw-bold">Data</label>
+    <input type="date" id="mov-data" class="form-control">
+</div>
+<div class="mb-4 form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="mov-fixo">
+    <label class="form-check-label small fw-bold" for="mov-fixo">Repetir todos os meses (Fixo)</label>
+</div>
+
+                    <div class="d-flex gap-2">
+    <button class="btn btn-purple flex-grow-1 py-3 text-white fw-bold rounded-4" style="background:var(--purple)" onclick="salvarMov()">Salvar Registro</button>
+    <button id="btn-excluir-mov" class="btn btn-danger d-none py-3 rounded-4" onclick="moverMovParaLixeira()">
+        <i class="fas fa-trash"></i>
+    </button>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCartao" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-3" id="modalCartaoTitulo">Novo Cartão</h5>
+                    <input type="hidden" id="card-id-edit">
+                    <div class="mb-2">
+                        <label class="small">Nome do Cartão</label>
+                        <input type="text" id="card-nome" class="form-control" placeholder="Ex: Nubank, Inter...">
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="small">Limite</label>
+                            <input type="text" id="card-limite" class="form-control" placeholder="R$ 0,00" inputmode="numeric">
+                        </div>
+                        <div class="col-6">
+                            <label class="small">Bandeira</label>
+                            <select id="card-bandeira" class="form-select">
+                                <option>Visa</option><option>Mastercard</option><option>Elo</option><option>Amex</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="small">Fechamento (Dia)</label>
+                            <input type="number" id="card-fecha" class="form-control" placeholder="Ex: 05">
+                        </div>
+                        <div class="col-6">
+                            <label class="small">Vencimento (Dia)</label>
+                            <input type="number" id="card-vence" class="form-control" placeholder="Ex: 12">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="small">Tipo</label>
+                        <select id="card-tipo" class="form-select">
+                            <option value="Crédito">Crédito</option>
+                            <option value="Débito">Débito</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="small">Banco (cor automática)</label><select id="card-banco" class="form-select" onchange="aplicarBanco()"><option value="">Personalizado</option><option>Nubank</option><option>Inter</option><option>Itaú</option><option>Bradesco</option><option>Santander</option><option>Banco do Brasil</option><option>Caixa</option><option>C6 Bank</option><option>PicPay</option><option>Mercado Pago</option><option>BTG Pactual</option><option>Neon</option><option>Next</option><option>Original</option><option>Sicredi</option><option>XP</option><option>Will Bank</option></select></div>
+                    <div class="mb-3">
+                        <label class="small">Cor do Cartão</label>
+                        <input type="color" id="card-cor-custom" class="form-control form-control-color w-100" value="#4ecca3">
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-bold">Cor da Fonte (Texto)</label>
+                        <select id="card-cor-fonte" class="form-select">
+                            <option value="#ffffff" selected>Branco</option>
+                            <option value="#000000">Preto</option>
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-purple flex-grow-1 text-white" style="background:var(--purple)" onclick="addCartao()">Salvar</button>
+                        <button id="btn-excluir-cartao" class="btn btn-danger d-none" onclick="excluirCartaoNoModal()">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCompraCartao" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-3" id="modalCompraTitulo">Nova Compra</h5>
+                    <input type="hidden" id="compra-id-edit">
+                    <div class="mb-2">
+                        <label class="small">Descrição</label>
+                        <input type="text" id="compra-desc" class="form-control" placeholder="Ex: Supermercado">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small">Valor Total</label>
+                        <input type="text" id="compra-valor" class="form-control" placeholder="R$ 0,00" inputmode="numeric">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small">Parcelas</label>
+                        <input type="number" id="compra-parcelas" class="form-control" placeholder="Ex: 1 para à vista">
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="compra-fixa" onchange="if(this.checked){ document.getElementById('compra-parcelas').value = 1; document.getElementById('compra-parcelas').disabled = true; } else { document.getElementById('compra-parcelas').disabled = false; }">
+                        <label class="form-check-label small fw-bold" for="compra-fixa">Repetir todos os meses (Fixo)</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small">Data</label>
+                        <input type="date" id="compra-data" class="form-control">
+                    </div>
+                    <div class="mb-4">
+                        <div class="form-check form-switch p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
+                            <div>
+                                <label class="form-check-label fw-bold small text-dark" for="compra-emprestado" style="cursor: pointer;">
+                                    <i class="fas fa-handshake text-warning me-2"></i> Cartão Emprestado / Terceiros
+                                </label>
+                                <div class="text-muted" style="font-size: 0.72rem; line-height: 1.2;">Ative se a compra foi para outra pessoa (não afetará seu extrato geral).</div>
+                            </div>
+                            <input class="form-check-input ms-0" type="checkbox" id="compra-emprestado" style="cursor: pointer; width: 2.5em; height: 1.25em;">
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-purple flex-grow-1 text-white" style="background:var(--purple)" onclick="salvarCompraCartao()">Confirmar</button>
+                        <button id="btn-excluir-compra" class="btn btn-danger d-none" onclick="excluirCompraNoModal()">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="modal fade" id="modalMeta" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px;">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-4">Nova Meta de Sonho</h5>
+                    
+                    <div class="mb-3">
+                        <label class="small fw-bold">O que você quer conquistar?</label>
+                        <input type="text" id="meta-nome" class="form-control" placeholder="Ex: Comprar um Carro, Viagem...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="small fw-bold">Valor Objetivo (R$)</label>
+                        <input type="text" id="meta-objetivo" class="form-control" placeholder="0,00" inputmode="numeric">
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="small fw-bold">Data de Início</label>
+                            <input type="date" id="meta-data-inicio" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold">Data Alvo (Final)</label>
+                            <input type="date" id="meta-data-fim" class="form-control">
+                        </div>
+                                        </div>
+                    
+                                       <button type="button" class="btn btn-purple w-100 py-3 text-white fw-bold rounded-4" style="background:var(--purple)" onclick="salvarMeta()">Criar Meta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDivida" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-3" id="modalDividaTitulo">Contas</h5>
+                    <input type="hidden" id="div-id-edit">
+                    <select id="div-tipo" class="form-select mb-2">
+                        <option value="eu-devo">À pagar</option>
+                        <option value="me-devem">À receber</option>
+                    </select>
+                    <input type="text" id="div-nome" class="form-control mb-2" placeholder="Nome Completo">
+                    <input type="text" id="div-valor" class="form-control mb-2" placeholder="Valor R$" inputmode="numeric">
+                    <label class="small">Parcelas (1 = valor único; prazo = 1º vencimento)</label>
+                    <input type="number" id="div-parcelas" class="form-control mb-2" min="1" max="120" value="1">
+                    <input type="tel" id="div-whats" class="form-control mb-2" placeholder="WhatsApp (DDD + Número)">
+                    <input type="text" id="div-desc" class="form-control mb-2" placeholder="Descrição (O que é?)">
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="small">Data Início</label>
+                            <input type="date" id="div-inicio" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label class="small">Data Prazo</label>
+                            <input type="date" id="div-prazo" class="form-control">
+                        </div>
+                    </div>
+                    <textarea id="div-obs" class="form-control mb-3" placeholder="Observações extras..."></textarea>
+                    
+                                        <div class="d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1 rounded-3" onclick="addDivida()">Salvar Registro</button>
+                        <button id="btn-excluir-divida" class="btn btn-danger d-none" onclick="excluirDivida()">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalPagamento" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered shadow-lg">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="tituloPagamento">Registrar Pagamento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="pag-id">
+                    <input type="hidden" id="pag-modo">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Data do Pagamento</label>
+                        <input type="date" id="pag-data" class="form-control form-control-lg">
+                    </div>
+                                       <div id="area-valor-pag" class="mb-3">
+                        <label class="form-label small text-muted">Valor a Pagar</label>
+                        <input type="text" id="pag-valor" class="form-control form-control-lg text-success fw-bold" placeholder="0,00" inputmode="numeric">
+                    </div>
+                    <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="pag-extrato" checked><label class="form-check-label small" for="pag-extrato">Lançar no extrato (pagamento/recebimento de dívida)</label></div>
+                </div>
+                                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success px-4" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="btn-calc-float" onclick="toggleCalculadora()">
+        <i class="fas fa-calculator"></i>
+    </button>
+
+    <div id="calc-container" style="display: none;">
+        <div id="calc-header">
+            <span class="small fw-bold"><i class="fas fa-calculator me-2"></i>Calculadora</span>
+            <div class="calc-controls">
+                <button onclick="toggleCalculadora()"><i class="fas fa-minus"></i></button>
+            </div>
+        </div>
+        <div id="calc-body">
+            <input type="text" id="calc-display" readonly value="0">
+            <div class="calc-buttons">
+                <button onclick="calcLimpar()" class="btn-calc-op">C</button>
+                <button onclick="calcApagar()" class="btn-calc-op"><i class="fas fa-backspace"></i></button>
+                <button onclick="calcAdd('/')" class="btn-calc-op">/</button>
+                <button onclick="calcAdd('*')" class="btn-calc-op">×</button>
+                
+                <button onclick="calcAdd('7')">7</button>
+                <button onclick="calcAdd('8')">8</button>
+                <button onclick="calcAdd('9')">9</button>
+                <button onclick="calcAdd('-')" class="btn-calc-op">-</button>
+                
+                <button onclick="calcAdd('4')">4</button>
+                <button onclick="calcAdd('5')">5</button>
+                <button onclick="calcAdd('6')">6</button>
+                <button onclick="calcAdd('+')" class="btn-calc-op">+</button>
+                
+                <button onclick="calcAdd('1')">1</button>
+                <button onclick="calcAdd('2')">2</button>
+                <button onclick="calcAdd('3')">3</button>
+                <button id="btn-calc-result" onclick="calcResultado()">=</button>
+                
+                <button onclick="calcAdd('0')" style="grid-column: span 2;">0</button>
+                <button onclick="calcAdd('.')">.</button>
+            </div>
+        </div>
+        <div id="calc-resizer"></div>
+    </div>
+
+    <div class="modal fade" id="modalNota" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden;">
+                                <div class="modal-body p-4" id="cor-fundo-modal-nota" style="transition: background 0.3s;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0" id="modalNotaTitulo">Nova Nota</h5>
+                                                <button type="button" class="btn p-0" id="btn-fixar-nota" onclick="toggleFixarNota()">
+                            <i class="fas fa-thumbtack"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="nota-id-edit">
+                    <input type="hidden" id="nota-fixada" value="false">
+                    <input type="hidden" id="nota-cor-fundo" value="#ffffff">
+
+                    <input type="text" id="nota-titulo" class="form-control bg-transparent border-0 fw-bold fs-5 mb-2 p-0 shadow-none" placeholder="Título">
+                    <textarea id="nota-texto" class="form-control bg-transparent border-0 p-0 shadow-none" rows="8" placeholder="Comece a escrever..." style="resize: none;"></textarea>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                                <div class="d-flex align-items-center gap-2" id="seletor-cores-nota">
+                            <label for="nota-cor-custom" class="me-1 small text-muted"><i class="fas fa-palette"></i></label>
+                            <input type="color" id="nota-cor-custom" class="form-control form-control-color" style="width: 40px; height: 35px; padding: 0; border-radius: 8px; border: 1px solid #ddd; cursor: pointer;" value="#ffffff" oninput="selecionarCorNota(this.value)">
+                        </div>
+                        
+                        <div class="d-flex gap-1">
+                            <button id="btn-excluir-nota" class="btn btn-light btn-sm d-none" onclick="excluirNota()">
+                                <i class="fas fa-trash text-danger"></i>
+                            </button>
+                            <button id="btn-copiar-nota" class="btn btn-light btn-sm d-none" onclick="copiarNota()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn btn-purple px-4 text-white fw-bold rounded-3" style="background:var(--purple)" onclick="salvarNota()">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalProdutoRevenda" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px;">
+                <div class="modal-body p-4">
+                    <h5 class="fw-bold mb-4">Adicionar Produto para Revenda</h5>
+                    <input type="hidden" id="revenda-id-edit">
+                    
+                    <div class="mb-3">
+                        <label class="small fw-bold">Nome do Produto</label>
+                        <input type="text" id="revenda-nome" class="form-control" placeholder="Ex: Camiseta Oversized, Relógio...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="small fw-bold">Categoria</label>
+                        <select id="revenda-cat" class="form-select">
+                            <option>Roupas / Vestuário</option>
+                            <option>Eletrônicos</option>
+                            <option>Acessórios</option>
+                            <option>Cosméticos / Perfumaria</option>
+                            <option>Calçados</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="small fw-bold">Valor de Compra (Atacado)</label>
+                            <input type="text" id="revenda-vlr-compra" class="form-control" placeholder="0,00" inputmode="numeric">
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold">Valor de Venda</label>
+                            <input type="text" id="revenda-vlr-venda" class="form-control" placeholder="0,00" inputmode="numeric">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4"><label class="small fw-bold">Quantidade em estoque</label><input type="number" id="revenda-qtd" class="form-control" min="1" value="1"></div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-purple flex-grow-1 py-3 text-white fw-bold rounded-4" style="background:var(--purple)" onclick="salvarProdutoRevenda()">Salvar Produto</button>
+                        <button id="btn-excluir-revenda" class="btn btn-danger d-none py-3 rounded-4" onclick="excluirProdutoRevenda()">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="app.js?v=18"></script>
+</body>
+</html>
