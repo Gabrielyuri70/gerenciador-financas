@@ -1,0 +1,1747 @@
+:root { 
+    --primary: #1a1a2e; --accent: #4ecca3; --purple: #57005F; --danger: #D62839; --warning: #f1c40f; 
+    --bg-body: #f0f2f5; --bg-card: #ffffff; --text-main: #1c1e21; --text-muted: #65676b; --border-color: #ebedf0;
+    --bg-list-item: #ffffff; /* Nova variável para controlar listas */
+}
+[data-bs-theme="dark"] {
+    --bg-body: #0b0e11; --bg-card: #151921; --text-main: #f1f3f5; --text-muted: #c1c5cd; --border-color: #2d323c;
+    --bg-list-item: #151921; /* Força o fundo escuro nas listas */
+}
+/* MELHORIA: Barra de rolagem personalizada e fina */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-body); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+body { 
+    background-color: var(--bg-body); 
+    color: var(--text-main); 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    padding-bottom: 100px; 
+    transition: background-color 0.5s ease, color 0.5s ease; 
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: hidden; 
+}
+#tela-login {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center;
+}
+/* Nova regra para quando o JS ocultar o login */
+#tela-login[style*="display: none"] {
+    display: none !important;
+    pointer-events: none !important;
+}
+.login-card {
+    background: var(--bg-card); padding: 30px; border-radius: 24px;
+    width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+/* CONTAINER PARA CENTRALIZAR A FOTO DE PERFIL */
+.avatar-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FOTO DE PERFIL: Tamanho idêntico ao antigo ícone (60px) e com bordas arredondadas */
+.avatar-login {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px; /* Mantém o mesmo design arredondado do ícone anterior */
+    object-fit: cover;   /* Garante que a foto preencha o espaço sem distorcer ou amassar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para dar um destaque sutil */
+}
+
+.navbar-top { 
+    background: var(--bg-card); backdrop-filter: blur(10px); 
+    padding: 12px 20px; border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; z-index: 1000;
+    transition: all 0.5s ease; /* Simplifica e garante que bordas e cores mudem juntas */
+    color: var(--text-main); 
+    width: 100%; 
+    box-sizing: border-box; /* Adicionado para evitar que o padding gere scroll horizontal */
+}
+.main-balance-card { 
+    background: linear-gradient(135deg, #57005F 0%, #7a1a85 100%); 
+    color: white; border-radius: 24px; padding: 25px; margin-bottom: 20px; 
+    box-shadow: 0 10px 25px -5px rgba(87, 0, 95, 0.4);
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.main-balance-card::after {
+    content: ""; position: absolute; top: -50%; right: -20%; width: 200px; height: 200px;
+    background: rgba(255,255,255,0.1); border-radius: 50%;
+    pointer-events: none; /* o círculo decorativo cobria os botões do topo */
+}
+
+.section { 
+    display: none; 
+    opacity: 0; 
+}
+.section.active { 
+    display: block !important; 
+    opacity: 1 !important;
+    pointer-events: auto !important; /* Garante que os botões fiquem clicáveis */
+    animation: fadeIn 0.4s ease-out forwards;
+}
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+.card-mov { 
+    background: var(--bg-card); border-radius: 18px; padding: 16px; margin-bottom: 12px; 
+    border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    justify-content: space-between; /* Distribui o espaço entre os blocos */
+}
+.card-mov:hover { border-color: var(--purple); transform: translateY(-3px) scale(1.01); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+.card-mov:active { transform: scale(0.97); }
+
+[data-bs-theme="dark"] .card-mov .text-muted,
+[data-bs-theme="dark"] .card-mov small {
+    color: #a0a5b5 !important; /* Cinza muito mais claro para dar contraste perfeito */
+}
+
+.icon-box { 
+    width: 45px; height: 45px; border-radius: 12px; display: flex; 
+    align-items: center; justify-content: center; font-size: 18px; 
+    transition: background 0.3s ease;
+    flex-shrink: 0; /* IMPEDE o ícone de diminuir de tamanho */
+}
+
+/* NOVA CLASSE: Para o container do texto central (título/subtítulo) */
+.card-mov-info {
+    flex-grow: 1;      /* Faz o texto ocupar todo o espaço central disponível */
+    min-width: 0;      /* Permite que o flex container reduza e quebre o texto sem estourar */
+    word-wrap: break-word;
+}
+
+/* NOVA CLASSE: Para garantir que o valor não quebre e fique sempre legível */
+.card-mov-value {
+    text-align: right;
+    flex-shrink: 0;    /* IMPEDE o valor financeiro de ser espremido ou quebrado */
+    white-space: nowrap; /* Garante que o R$ e o número fiquem na mesma linha */
+    font-weight: 700;
+}
+.bottom-nav {
+    position: fixed; bottom: 0; width: 100%; background: var(--bg-card);
+    display: flex; justify-content: space-around; 
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); /* Ajuste automático para iPhones novos */
+    border-top: 1px solid var(--border-color); z-index: 1000;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    transition: background 0.5s ease;
+}
+.nav-btn { 
+    background: none; border: none; color: var(--text-muted); 
+    font-size: 11px; flex: 1; transition: all 0.3s ease; 
+}
+.nav-btn i { font-size: 20px; display: block; margin-bottom: 4px; transition: transform 0.2s ease; }
+.nav-btn:active i { transform: translateY(-3px); }
+.nav-btn.active { color: var(--purple); font-weight: bold; }
+
+.btn-add-main {
+    background: var(--purple); width: 56px; height: 56px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; color: white;
+    font-size: 24px; margin-top: -40px; box-shadow: 0 8px 20px rgba(87, 0, 95, 0.3);
+    border: 4px solid var(--bg-body);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.5s ease;
+}
+
+[data-bs-theme="dark"] .btn-add-main {
+    border-color: var(--bg-body);
+}
+
+.btn-add-main:hover { transform: scale(1.1); }
+.btn-add-main:active { transform: scale(0.85) rotate(90deg); }
+
+.credit-card-container {
+    border-radius: 20px; padding: 15px; color: #ffffff; margin-bottom: 0px; margin-top: -8px;
+    position: relative; box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Adicionado para garantir leitura em qualquer cor de card */
+}
+
+.credit-card-container:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+
+.card-compact {
+    min-height: 100px; padding: 12px; border-radius: 15px; cursor: pointer; margin-bottom: 0px; margin-top: -8px;
+}
+
+.card-compact h6 { font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.card-compact small { font-size: 0.7rem; opacity: 0.8; }
+
+.card-header-ui { display: flex; justify-content: space-between; align-items: flex-start; }
+
+.card-limit-box { background: rgba(255,255,255,0.15); border-radius: 15px; height: 6px; margin: 10px 0; overflow: hidden; }
+.card-limit-progress { height: 100%; background: #4ecca3; border-radius: 15px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.card-actions-ui { display: flex; gap: 8px; margin-top: 10px; }
+.btn-card-white { 
+    background: #fff; color: #000; border: none; border-radius: 12px; padding: 8px; 
+    flex-grow: 1; font-weight: bold; font-size: 14px; transition: all 0.2s;
+}
+.btn-card-white:active { opacity: 0.8; transform: scale(0.98); }
+.btn-card-outline { 
+    background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); 
+    border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; 
+    justify-content: center; transition: all 0.2s;
+}
+.btn-card-outline:active { background: rgba(255,255,255,0.3); }
+
+.goal-bar { height: 8px; border-radius: 4px; background: rgba(0,0,0,0.05); overflow: hidden; }
+.modal-content { border-radius: 28px; border: none; background: var(--bg-card); color: var(--text-main); animation: slideUp 0.3s ease-out; transition: background 0.5s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+.btn-balance-adj {
+    border-radius: 12px; padding: 10px; font-weight: 600; font-size: 0.85rem;
+    transition: all 0.2s; border: none; display: flex; align-items: center; justify-content: center;
+}
+.btn-balance-adj:active { transform: scale(0.95); }
+
+.badge-lixeira { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; text-transform: uppercase; font-weight: 700; }
+
+.password-container { position: relative; }
+.password-toggle { 
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+    cursor: pointer; color: var(--text-muted); z-index: 10;
+}
+
+.historico-pagamento {
+    background: rgba(0,0,0,0.03);
+    border-radius: 10px;
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+}
+.item-historico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 6px 0;
+}
+.item-historico:last-child { border-bottom: none; }
+
+#img-comprovante-view {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: zoom-in;
+}
+.zoom-active {
+    transform: scale(1.5);
+    cursor: zoom-out;
+}
+
+.card-info-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 5px; opacity: 0.9; }
+.compra-card { border-left: 4px solid var(--purple); margin-bottom: 10px; padding: 10px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.2s, background 0.5s ease; }
+.compra-card:hover { transform: scale(1.02); }
+
+/* CORREÇÃO: Borra apenas valores financeiros específicos e evita borrar ícones da interface */
+.values-hidden .money-value {
+    filter: blur(8px); 
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none; /* Adicionado para compatibilidade mobile */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: inline-block;
+    opacity: 0.7; 
+}
+
+/* Força o botão do olho a continuar aceitando cliques mesmo quando os valores estiverem ocultos */
+.values-hidden #btn-olho {
+    pointer-events: auto !important;
+}
+/* Adicionado para compatibilidade mobile */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: inline-block;
+    opacity: 0.7; 
+}
+
+/* Garante que cores de texto em valores também sejam borradas, mas apenas se tiverem a classe money-value */
+.values-hidden .money-value.text-success, 
+.values-hidden .money-value.text-danger {
+    filter: blur(10px);
+}
+[data-bs-theme="dark"] .form-control, 
+[data-bs-theme="dark"] .form-select {
+    background-color: var(--bg-card); /* Alterado para bg-card para destacar do fundo da página */
+    color: var(--text-main) !important;
+    border-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .form-control:focus, 
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--purple);
+    box-shadow: 0 0 0 0.25rem rgba(87, 0, 95, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+/* --- AJUSTES NOVOS PARA SININHO E GRÁFICO --- */
+#badge-notificacao {
+    font-size: 0.5rem;
+    margin-top: 5px;
+    margin-left: -5px;
+    border: 2px solid var(--bg-card);
+}
+
+/* Removido o display: none conflitante. Agora a seção de gráficos respeita a regra geral de abas */
+.secao-app {
+    opacity: 0;
+}
+
+/* Garante que o dropdown não seja cortado pelo scroll da sidebar */
+#menuSidebar .offcanvas-body {
+    overflow-x: visible !important;
+    overflow-y: auto !important;
+}
+
+/* CORREÇÃO GLOBAL: Força os componentes do Bootstrap a respeitarem o tema */
+[data-bs-theme="dark"] .offcanvas,
+[data-bs-theme="dark"] .offcanvas-header,
+[data-bs-theme="dark"] .offcanvas-body,
+[data-bs-theme="dark"] .list-group-item,
+[data-bs-theme="dark"] .modal-header,
+[data-bs-theme="dark"] .modal-footer,
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-light:not(.style-calendario-topo .bg-light) {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* CORREÇÃO DA SIDEBAR: Força o nome do usuário/visitante a ficar legível no modo escuro */
+[data-bs-theme="dark"] .offcanvas .text-muted,
+[data-bs-theme="dark"] .offcanvas .text-secondary,
+[data-bs-theme="dark"] .offcanvas h5,
+[data-bs-theme="dark"] .offcanvas h6,
+[data-bs-theme="dark"] .offcanvas span,
+[data-bs-theme="dark"] #menuSidebar .offcanvas-header *, 
+[data-bs-theme="dark"] #menuSidebar .text-dark,
+[data-bs-theme="dark"] #menuSidebar .text-black {
+    color: var(--text-main) !important;
+}
+[data-bs-theme="dark"] .list-group-item-action:hover {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* DEPOIS */
+[data-bs-theme="dark"] .btn-light {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+/* Força o container arredondado do calendário e o input a ficarem escuros */
+[data-bs-theme="dark"] .style-calendario-topo .bg-light {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+[data-bs-theme="dark"] #mes-atual {
+    color: var(--text-main) !important;
+}
+
+/* Ajuste principal do dropdown */
+#menuSidebar .dropdown-menu {
+    position: static !important; 
+    transform: none !important;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 0;
+}
+
+/* Ajuste para o modo escuro */
+[data-bs-theme="dark"] #menuSidebar .dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+#menuSidebar .dropdown-item {
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+#menuSidebar .dropdown-item:hover {
+    background-color: var(--border-color);
+    padding-left: 1.5rem; /* Efeito de deslocamento visual */
+}
+
+#menuSidebar .dropdown-toggle::after {
+    margin-right: 10px;
+}
+/* --- ESTILOS DO GRÁFICO DUPLO DETALHADO POR CATEGORIA --- */
+
+.chart-detalhado-container {
+    position: relative;
+    height: 300px; /* Ajustado para 300px para melhor visualização em telas menores */
+    max-height: 70vh; /* Adicionado limite para não estourar a altura da tela */
+    width: 100%;
+}
+.chart-center-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none; /* Não impede cliques no gráfico */
+}
+
+.chart-center-info small {
+    color: var(--text-muted);
+}
+
+.chart-center-info span {
+    color: var(--text-main);
+    display: block;
+}
+
+/* Garante que o scroll da legenda HTML fique bom no dark mode */
+[data-bs-theme="dark"] #legenda-grafico-html {
+    scrollbar-color: var(--purple) var(--bg-body);
+}
+
+[data-bs-theme="dark"] #legenda-grafico-html .list-group-item {
+    background-color: transparent;
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+/* Botão Flutuante */
+#btn-calc-float {
+    position: fixed;
+    right: 20px;
+    bottom: 90px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: transform 0.2s;
+}
+
+/* Janela da Calculadora */
+#calc-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 260px;
+    min-width: 220px;
+    height: 380px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both; /* Permite redimensionar */
+    transition: background 0.5s ease;
+}
+
+/* Correção de botões e textos internos da calculadora no dark mode */
+[data-bs-theme="dark"] #calc-container {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .calc-buttons button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .calc-buttons button:active {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+#calc-header {
+    background: var(--purple);
+    color: white;
+    padding: 10px 15px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+#calc-body {
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#calc-display {
+    width: 100%;
+    border: none;
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    text-align: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    color: var(--text-main);
+}
+/* Leve ajuste de contraste para o fundo do visor no modo escuro */
+[data-bs-theme="dark"] #calc-display {
+    background: rgba(255,255,255,0.05);
+}
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.calc-buttons button {
+    border: none;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.05);
+    color: var(--text-main);
+    font-weight: bold;
+    padding: 10px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+[data-bs-theme="dark"] .calc-buttons button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-main) !important;
+}
+
+.btn-calc-op { color: var(--purple) !important; background: rgba(111, 66, 193, 0.1) !important; }
+#btn-calc-result { grid-row: span 2; background: var(--purple); color: white; }
+.calc-controls button { background: transparent; border: none; color: white; }
+/* --- ESTILOS DO BLOCO DE NOTAS --- */
+
+/* Card de cada nota na lista */
+.nota-card {
+    border-radius: 15px;
+    padding: 0 !important; /* Remove o padding do card para a div interna de clique ocupar tudo */
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.05);
+    height: 100%;
+    display: block; /* Mudado de flex para block */
+    min-height: 120px;
+    text-align: left; /* Garante o alinhamento à esquerda */
+}
+.nota-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.nota-titulo-card {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nota-resumo-card {
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.6);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+/* Ícone de fixado no card */
+.pin-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.7rem;
+    color: var(--purple);
+    transform: rotate(45deg);
+}
+
+/* Opções de cores no Modal */
+.cor-opt {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.cor-opt:hover {
+    transform: scale(1.2);
+}
+
+.cor-opt.active {
+    border-color: var(--purple);
+}
+
+/* Ajustes no Modal de Notas */
+#modalNota .modal-content {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#nota-titulo::placeholder, #nota-texto::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* Força os inputs de texto internos do modal de nota a usarem a cor correta */
+[data-bs-theme="dark"] #nota-titulo,
+[data-bs-theme="dark"] #nota-texto {
+    color: var(--text-main) !important;
+}
+/* Botão de fixar dentro do modal */
+#btn-fixar-nota {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+#btn-fixar-nota.active {
+    background: rgba(0,0,0,0.1);
+    color: var(--purple);
+}
+
+#btn-fixar-nota.active i {
+    font-weight: 900; /* Preenche o ícone do FontAwesome */
+}
+
+/* Dark Mode para Notas */
+[data-bs-theme="dark"] .nota-card {
+    border-color: rgba(255,255,255,0.1);
+}
+/* Se a nota tiver fundo branco padrão, no dark mode ela se adapta. Se for colorida, mantém o texto escuro */
+[data-bs-theme="dark"] .nota-card[style*="background:#ffffff"],
+[data-bs-theme="dark"] .nota-card[style*="background: #ffffff"],
+[data-bs-theme="dark"] .nota-card[style*="background: rgb(255, 255, 255)"],
+[data-bs-theme="dark"] .nota-card:not([style*="background"]) {
+    color: var(--text-main);
+}
+[data-bs-theme="dark"] .nota-card:not([style*="background"]) .nota-resumo-card,
+[data-bs-theme="dark"] .nota-card[style*="background:#ffffff"] .nota-resumo-card,
+[data-bs-theme="dark"] .nota-card[style*="background: #ffffff"] .nota-resumo-card {
+    color: var(--text-muted) !important; /* Ajusta o resumo da nota padrão para usar o novo cinza claro */
+}
+[data-bs-theme="dark"] .nota-card[style*="background-color"],
+[data-bs-theme="dark"] .nota-card[style*="background:#fff9c4"], [data-bs-theme="dark"] .nota-card[style*="background: #fff9c4"],
+[data-bs-theme="dark"] .nota-card[style*="background:#ffcdd2"], [data-bs-theme="dark"] .nota-card[style*="background: #ffcdd2"],
+[data-bs-theme="dark"] .nota-card[style*="background:#bbdefb"], [data-bs-theme="dark"] .nota-card[style*="background: #bbdefb"],
+[data-bs-theme="dark"] .nota-card[style*="background:#c8e6c9"], [data-bs-theme="dark"] .nota-card[style*="background: #c8e6c9"] {
+    color: #1c1e21 !important;
+}
+[data-bs-theme="dark"] .nota-card[style*="background"] .nota-resumo-card {
+    color: rgba(0, 0, 0, 0.7) !important;
+}
+[data-bs-theme="dark"] .nota-card[style*="background"] .nota-titulo-card {
+    color: #1c1e21 !important;
+}
+
+/* --- ESTILOS DO SISTEMA DE METAS --- */
+.bg-purple {
+    background-color: var(--purple) !important;
+}
+
+/* Ajuste das barras de progresso para herdar o padrão arredondado da interface */
+.progress {
+    background-color: rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Garante o contraste dos textos e botões das metas no Modo Escuro */
+[data-bs-theme="dark"] .card.bg-white {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white h6 {
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-bs-theme="dark"] .card.bg-white b:not(.text-success) {
+    color: var(--text-main) !important;
+}
+
+/* --- CORREÇÕES ESPECÍFICAS PARA A TELA DE DÍVIDAS --- */
+
+/* Força os cards de "Total a pagar" e "Total a receber" a ficarem escuros */
+[data-bs-theme="dark"] #dividas .card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Corrige o texto desses cards para não sumirem */
+[data-bs-theme="dark"] #dividas .card .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Corrige o fundo da barra de abas (Eu devo / Me devem) */
+[data-bs-theme="dark"] #pills-tab {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Estiliza os botões das abas quando não estão selecionados */
+[data-bs-theme="dark"] #pills-tab .nav-link {
+    color: var(--text-muted) !important;
+}
+
+/* Estiliza o botão da aba ativa */
+[data-bs-theme="dark"] #pills-tab .nav-link.active {
+    background-color: var(--purple) !important;
+    color: #ffffff !important;
+}
+
+/* Força as listas de dívidas injetadas a seguirem o padrão escuro */
+[data-bs-theme="dark"] #lista-eu-devo .card-mov,
+[data-bs-theme="dark"] #lista-me-devem .card-mov {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Nova regra: Aplica o modo escuro no input, select e no bloco da lupa na área de dívidas */
+[data-bs-theme="dark"] #dividas input,
+[data-bs-theme="dark"] #dividas select {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+[data-bs-theme="dark"] #dividas .input-group-text {
+    background-color: var(--bg-card) !important;
+    color: var(--text-muted) !important; /* Mantém apenas a lupa com cor discreta */
+    border-color: var(--border-color) !important;
+}
+/* Nova regra: Corrige o histórico de pagamentos, o prazo e o avatar de dívidas no modo escuro */
+[data-bs-theme="dark"] .historico-pagamento {
+    background-color: rgba(255, 255, 255, 0.05) !important; /* Fundo escuro leve e translúcido */
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color);
+}
+
+[data-bs-theme="dark"] .historico-pagamento small,
+[data-bs-theme="dark"] .historico-pagamento .text-muted {
+    color: #b0b5c6 !important; /* Tom de cinza pastel que se destaca sobre o fundo escuro do bloco */
+}
+[data-bs-theme="dark"] .item-historico {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important; /* Linha divisória sutil, sem sumir */
+}
+/* Se a caixinha de "Prazo" for um badge ou elemento com fundo claro nativo */
+[data-bs-theme="dark"] #dividas .card-mov border, 
+[data-bs-theme="dark"] #dividas [style*="background-color: white"],
+[data-bs-theme="dark"] #dividas .badge:not(.bg-purple) {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+}
+
+/* Corrige o fundo do ícone/avatar padrão caso ele use um bg-light ou similar */
+[data-bs-theme="dark"] #dividas .icon-box,
+[data-bs-theme="dark"] #dividas .avatar-login-container i {
+    background-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* Garante o ajuste perfeito dos botões de status */
+.filter-status-btn {
+    white-space: nowrap !important;
+    font-size: 0.78rem !important;
+    font-weight: 500;
+}
+
+/* Oculta barras de rolagem caso o espaço fique muito apertado */
+.clip-scroll::-webkit-scrollbar {
+    display: none;
+}
+.clip-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+/* Ajuste fino para os novos ícones de perfil em formato Font Awesome */
+.sidebar-user-box i.fa-user-circle,
+#aba-perfil i.fa-user-circle {
+    line-height: 1 !important;
+    display: inline-flex !important;
+}
+#btn-olho {
+    cursor: pointer !important;
+    position: relative;
+    z-index: 1010; /* Garante que ele fique acima de qualquer elemento ou efeito do card */
+    transition: transform 0.2s ease;
+}
+#btn-olho:active {
+    transform: scale(0.9); /* Efeito visual de clique */
+}
+.card-resumo-divida {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color) !important;
+    transition: transform 0.2s ease;
+}
+
+/* Estilo para os botões de filtro rápido estilo pílula */
+.btn-status-filter {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.btn-status-filter.active, .btn-status-filter:hover {
+    background: var(--purple);
+    color: #ffffff !important;
+    border-color: var(--purple);
+    box-shadow: 0 4px 10px rgba(87, 0, 95, 0.2);
+}
+
+/* Card customizado para a listagem de dívidas */
+.divida-modern-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.divida-modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Indicadores de status laterais/badges bem definidos */
+.divida-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    display: inline-block;
+}
+.badge-vencida { background-color: rgba(214, 40, 57, 0.12); color: #D62839 !important; }
+.badge-pendente { background-color: rgba(241, 196, 15, 0.15); color: #d4ac0d !important; }
+.badge-paga { background-color: rgba(78, 204, 163, 0.15); color: #2ecc71 !important; }
+
+/* Estrutura interna do cabeçalho da dívida */
+.divida-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.divida-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.divida-avatar-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(87, 0, 95, 0.08);
+    color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.divida-title-main {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.divida-subtitle-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Área de valores destacada */
+.divida-price-box {
+    text-align: right;
+}
+.divida-value-amount {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Linha de rodapé com datas e ações rápidas */
+.divida-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+
+.divida-date-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.divida-actions-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-divida-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+.btn-divida-action:active { transform: scale(0.9); }
+
+.btn-action-whats { background: rgba(46, 204, 113, 0.12); color: #2ecc71; }
+.btn-action-whats:hover { background: #2ecc71; color: #fff; }
+
+.btn-action-more { background: rgba(0, 0, 0, 0.04); color: var(--text-muted); }
+[data-bs-theme="dark"] .btn-action-more { background: rgba(255, 255, 255, 0.06); }
+.btn-action-more:hover { background: var(--purple); color: #fff; }
+
+/* ===================== Tema / telas (antes em tema.css) ===================== */
+/* ===== Finanças Pro — acabamento leve (tema.css) — usa as cores e tamanhos ORIGINAIS do app ===== */
+:root { --chip:#f0eefb; --hero:linear-gradient(135deg,#57005F 0%,#7a1a85 100%); }
+[data-bs-theme="dark"] { --chip:#1f2430; }
+.section.active { animation:entrar .3s ease; } @keyframes entrar { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.money-value,#txt-saldo-geral { font-variant-numeric:tabular-nums; }
+
+/* Saudação e sequência (início) */
+#saudacao { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:0 2px 12px; }
+#saudacao h5 { margin:0; font-size:1.05rem; font-weight:700; } #saudacao small { font-size:.8rem; color:var(--text-muted); text-transform:capitalize; }
+.chip-seq { background:#f59e0b; color:#fff; border-radius:999px; padding:4px 10px; font-size:.75rem; font-weight:700; white-space:nowrap; }
+
+/* Atalhos rápidos (compactos) */
+#acoes-rapidas { display:flex; gap:10px; overflow-x:auto; padding:2px 2px 14px; scrollbar-width:none; } #acoes-rapidas::-webkit-scrollbar { display:none; }
+.acao-rapida { flex:0 0 auto; width:58px; text-align:center; background:none; border:0; padding:0; color:var(--text-main); font-size:11px; font-weight:600; line-height:1.2; }
+.acao-rapida i { display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin:0 auto 5px; border-radius:14px; background:var(--chip); color:var(--purple); font-size:16px; }
+.acao-rapida.destaque i { background:var(--purple); color:#fff; }
+[data-bs-theme="dark"] .acao-rapida i { color:#c4b5fd; } [data-bs-theme="dark"] .acao-rapida.destaque i { color:#fff; }
+
+/* Dica do dia (quanto posso gastar por dia) */
+#card-diario { background:var(--bg-card) !important; border:1px solid var(--border-color) !important; border-left:4px solid var(--accent) !important; color:var(--text-main); }
+
+/* Lista de movimentações: seta de entrada/saída ao lado esquerdo */
+.card-mov > :first-child { flex:1; min-width:0; }
+.card-mov:has(.text-success)::before,.card-mov:has(.text-danger)::before { flex:0 0 34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; }
+.card-mov:has(.text-success)::before { content:'↓'; background:rgba(78,204,163,.18); color:#1f9d78; }
+.card-mov:has(.text-danger)::before { content:'↑'; background:rgba(233,69,96,.15); color:#D62839; }
+
+.progress { border-radius:999px; } .progress-bar { border-radius:999px; } .badge { border-radius:999px; }
+
+/* Menu lateral: todas as opções à mostra (sem precisar clicar nos grupos) */
+#menuSidebar .dropdown-menu { display:block !important; position:static !important; transform:none !important; box-shadow:none !important; background:transparent; border:0; padding:0 0 6px; }
+#menuSidebar .dropdown-toggle { pointer-events:none; cursor:default; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); background:transparent; border:0; padding:12px 16px 4px !important; }
+#menuSidebar .dropdown-toggle::after,#menuSidebar .dropdown-toggle i { display:none; }
+#menuSidebar .dropdown-item { border-radius:12px; margin:1px 8px; width:calc(100% - 16px); font-size:.95rem; }
+#menuSidebar .dropdown-item i { width:30px; height:30px; border-radius:10px; background:var(--chip); display:inline-flex; align-items:center; justify-content:center; margin-right:10px !important; font-size:14px; }
+[data-bs-theme="dark"] .bg-white,[data-bs-theme="dark"] .bg-light { background:var(--bg-card) !important; } [data-bs-theme="dark"] .text-dark { color:var(--text-main) !important; }
+
+/* Computador: menu sempre aberto à esquerda */
+@media (min-width:992px) {
+  #menuSidebar { visibility:visible !important; transform:none !important; width:280px !important; border-right:1px solid var(--border-color); }
+  #menuSidebar .btn-close,.navbar-top > button:first-child { display:none; } .offcanvas-backdrop { display:none !important; }
+  body { padding-left:280px; } .bottom-nav { left:280px; width:calc(100% - 280px); }
+}
+
+/* ===== Nova Início (estilo app de banco) ===== */
+body.na-home #barra-mes { display:none; }
+.main-balance-card { padding:16px 16px 14px; }
+.hero-top { display:flex; justify-content:space-between; align-items:center; }
+.hero-meses { display:flex; align-items:center; gap:18px; }
+.hero-mes { background:none; border:0; color:rgba(255,255,255,.65); font-size:.9rem; font-weight:600; padding:2px 0; }
+#hero-mes-atual { color:#fff; font-size:1.05rem; border-bottom:2px solid #fff; padding-bottom:2px; }
+.main-balance-card h1 { font-size:1.9rem; }
+.hero-detalhes { color:#fff; font-size:.85rem; font-weight:600; cursor:pointer; text-decoration:none; white-space:nowrap; }
+.hero-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+.hero-tile { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.17); border-radius:14px; padding:10px 12px; min-width:0; }
+.hero-tile > i { width:30px; height:30px; flex:0 0 30px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.hero-tile:nth-child(1) > i { color:#10b981; } .hero-tile:nth-child(2) > i { color:#D62839; }
+.hero-tile small { display:block; font-size:.72rem; opacity:.85; } .hero-tile b { font-size:.95rem; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.home-sec-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; } .home-sec-head h6 { margin:0; font-weight:700; } .home-sec-head small { color:var(--purple); cursor:pointer; font-weight:600; }
+.h-scroll { display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; scroll-snap-type:x proximity; scrollbar-width:none; } .h-scroll::-webkit-scrollbar { display:none; } .h-scroll > * { scroll-snap-align:start; }
+.ic-box { width:32px; height:32px; flex:0 0 32px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:14px; } .ic-box.round { width:40px; height:40px; flex:0 0 40px; border-radius:50%; font-size:16px; }
+.prox-card { flex:0 0 215px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:12px; cursor:pointer; }
+.prox-top { display:flex; align-items:center; gap:8px; } .prox-top b { font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.prox-bot { display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-color); } .prox-bot b { font-size:.92rem; }
+.trans { display:flex; align-items:center; gap:12px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:11px 12px; margin-bottom:8px; cursor:pointer; }
+.trans-mid { flex:1; min-width:0; } .trans-mid b { display:block; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .trans-mid small { color:var(--text-muted); font-size:.75rem; }
+.trans-end { text-align:right; } .trans-end b { display:block; font-size:.95rem; } .trans-end small { color:var(--text-muted); font-size:.72rem; } .trans-go { color:var(--text-muted); font-size:.7rem; }
+
+/* ===== Cartões ===== */
+#home-lista-cartoes { display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none; } #home-lista-cartoes::-webkit-scrollbar { display:none; }
+#lista-cartoes { display:flex; flex-direction:column; gap:14px; }
+.fp-cartao { position:relative; flex:0 0 285px; min-height:178px; border-radius:22px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; box-shadow:0 12px 26px rgba(0,0,0,.22); }
+#lista-cartoes .fp-cartao { flex:none; width:100%; }
+.fp-deco { position:absolute; inset:0; border-radius:22px; overflow:hidden; pointer-events:none; }
+.fp-deco::before { content:''; position:absolute; width:190px; height:190px; border-radius:50%; background:rgba(255,255,255,.12); right:-60px; top:-80px; }
+.fp-deco::after { content:''; position:absolute; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,.08); right:40px; bottom:-70px; }
+.fp-cartao > *:not(.fp-deco) { position:relative; z-index:1; }
+.fp-c-top { display:flex; justify-content:space-between; align-items:flex-start; } .fp-c-nome { font-size:1.05rem; } .fp-sub { opacity:.8; font-size:.74rem; }
+.fp-bandeira { font-size:1.7rem; line-height:1; } .fp-band { font-size:.72rem; font-weight:800; letter-spacing:.05em; border:1px solid currentColor; border-radius:6px; padding:2px 6px; } .fp-menu { padding:6px; cursor:pointer; opacity:.9; }
+.fp-mid { margin:8px 0; } .fp-valor { font-size:1.55rem; font-weight:800; letter-spacing:-.02em; line-height:1.15; }
+.fp-pill { display:inline-block; margin-top:4px; background:rgba(255,255,255,.2); border-radius:999px; padding:2px 10px; font-size:.7rem; font-weight:600; }
+.fp-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.28); margin-bottom:6px; overflow:hidden; } .fp-bar > div { height:100%; border-radius:99px; background:currentColor; }
+.fp-novo { background:transparent !important; color:var(--purple) !important; border:2px dashed var(--purple); box-shadow:none; align-items:center; justify-content:center; gap:8px; min-height:178px; font-weight:700; }
+.fp-novo i { font-size:1.6rem; }
+@media (min-width:992px) { #lista-cartoes { display:grid; grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); } #lista-cartoes .fp-cartao { width:auto; } }
+
+/* ===== Início idêntica à referência: topo colorido + folha branca arredondada ===== */
+body.na-home .navbar-top,body.na-home #barra-mes { display:none; }
+#inicio .main-balance-card { margin:-16px -12px 0; border-radius:0; padding:calc(12px + env(safe-area-inset-top)) 16px 54px; box-shadow:none; }
+.hero-bar { display:flex; align-items:center; justify-content:space-between; gap:6px; }
+.hero-left,.hero-right { display:flex; align-items:center; min-width:76px; } .hero-right { justify-content:flex-end; }
+.hero-ic { position:relative; background:none; border:0; color:#fff; width:38px; height:38px; font-size:1.1rem; padding:0; }
+.hero-badge { position:absolute; top:3px; right:2px; min-width:16px; height:16px; border-radius:99px; background:#D62839; color:#fff; font-size:.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+.hero-badge.d-none { display:none !important; }
+.hero-saldo { position:relative; margin-top:16px; } .hero-saldo h1 { font-size:2rem; }
+#inicio .hero-detalhes { position:absolute; right:0; bottom:2px; }
+.home-sheet { position:relative; margin:-26px -12px 0; padding:18px 12px 8px; background:var(--bg-body); border-radius:26px 26px 0 0; }
+.home-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.home-tile { display:flex; align-items:center; gap:10px; background:var(--chip); border-radius:14px; padding:11px 12px; min-width:0; }
+.home-tile > i { font-size:1.15rem; } .home-tile:nth-child(1) > i { color:#10b981; } .home-tile:nth-child(2) > i { color:#D62839; }
+.home-tile small { display:block; font-size:.72rem; color:var(--text-muted); } .home-tile b { display:block; font-size:.98rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#acoes-rapidas { margin-bottom:4px; }
+@media (min-width:992px) { #inicio .main-balance-card { margin:0; border-radius:24px 24px 0 0; } .home-sheet { margin:-26px 0 0; } }
+/* cor alternativa (como na referência) */
+html[data-cor="verde"] { --purple:#16a34a; --chip:#e8f6ee; --hero:linear-gradient(135deg,#0a8f4d,#1ec677); }
+html[data-cor="verde"][data-bs-theme="dark"] { --chip:#16271e; }
+html[data-cor="verde"] .main-balance-card { background:linear-gradient(160deg,#0a8f4d 0%,#1ec677 100%) !important; }
+html[data-cor="verde"] .btn-add-main { background:#16a34a; box-shadow:0 8px 20px rgba(22,163,74,.35); }
+
+/* v12: esconder topo antigo na Início (o Bootstrap força d-flex com !important), menu ⋮ do cartão e botão X nas janelas */
+body.na-home .navbar-top, body.na-home #barra-mes { display:none !important; }
+.fp-c-top { z-index:5 !important; }
+.fp-menu-btn { background:rgba(255,255,255,.18); border:0; color:inherit; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0; }
+.fp-cartao .dropdown-menu { z-index:30; min-width:150px; }
+.fp-x { position:absolute; top:12px; right:12px; z-index:20; background-color:var(--chip); border-radius:50%; width:30px; height:30px; padding:0; opacity:1; background-size:10px; }
+
+/* ===== v13: mesmo design da Início em TODAS as telas ===== */
+.navbar-top, #barra-mes { display:none !important; }
+.fp-header { margin:-16px -12px 0; padding:calc(12px + env(safe-area-inset-top)) 16px 40px; color:#fff; background:linear-gradient(135deg,#57005F 0%,#7a1a85 100%); position:relative; overflow:hidden; }
+.fp-header::after { content:''; position:absolute; top:-50%; right:-20%; width:200px; height:200px; background:rgba(255,255,255,.1); border-radius:50%; pointer-events:none; }
+.fp-header > * { position:relative; z-index:1; }
+body.na-home .fp-header { display:none; }
+.fp-titulo { font-weight:700; font-size:1.1rem; text-align:center; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fp-meses-row { display:flex; justify-content:center; align-items:center; gap:22px; margin-top:12px; }
+.fp-mes-atual { color:#fff !important; font-size:1.05rem; border-bottom:2px solid #fff; padding-bottom:2px; }
+body:not(.na-home) .section.active { background:var(--bg-body); border-radius:26px 26px 0 0; margin:-26px -12px 0; padding:18px 12px 8px; position:relative; z-index:2; }
+.dia-titulo { font-size:.78rem; font-weight:700; color:var(--text-muted); text-transform:capitalize; margin:14px 2px 8px; }
+.card-mov { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; }
+@media (min-width:992px) { .fp-header { margin:0; border-radius:24px 24px 0 0; } body:not(.na-home) .section.active { margin:-26px 0 0; } }
+
+/* ===== v14: Dívidas compactas, ícones padronizados, calculadora flutuante ===== */
+.hero-left,.hero-right { min-width:114px; }
+#menuSidebar .dropdown-item i { color:var(--purple) !important; }
+.dropdown-menu .dropdown-item i { color:var(--text-muted) !important; width:18px; text-align:center; }
+.div-search { display:flex; align-items:center; gap:8px; background:var(--chip); border-radius:12px; padding:0 12px; height:40px; flex:1; min-width:0; }
+.div-search i { color:var(--text-muted); font-size:.85rem; } .div-search input { flex:1; min-width:0; border:0; background:transparent; outline:0; color:var(--text-main); font-size:.9rem; }
+#extrato .div-search { margin-bottom:12px; }
+.div-toolbar { display:flex; gap:8px; margin-bottom:10px; }
+.div-select { background:var(--chip); color:var(--text-main); border:0; border-radius:12px; height:40px; padding:0 6px; font-size:.8rem; max-width:112px; }
+.div-icon-btn { width:40px; height:40px; flex:0 0 40px; border:0; border-radius:12px; background:var(--chip); color:var(--purple); }
+.div-actions { display:flex; gap:8px; margin-bottom:12px; } .div-actions .btn { height:38px; font-size:.82rem; padding:0 12px; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+#dividas .nav-pills { background:var(--chip); border-radius:12px; padding:3px; }
+#dividas .nav-pills .nav-link { border-radius:10px; font-size:.85rem; padding:6px 0; color:var(--text-muted); } #dividas .nav-pills .nav-link.active { background:var(--purple); color:#fff; }
+#filtros-rapidos-status .btn-status-filter { border:0; border-radius:99px; font-size:.75rem; padding:3px 12px; background:var(--chip); color:var(--text-muted); } #filtros-rapidos-status .btn-status-filter.active { background:var(--purple); color:#fff; }
+.div-item { display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:9px 10px; }
+.div-av { width:36px; height:36px; flex:0 0 36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
+.div-av.pagar { background:rgba(233,69,96,.14); color:#D62839; } .div-av.receber { background:rgba(78,204,163,.18); color:#1f9d78; }
+.div-mid { flex:1; min-width:0; } .div-mid b { display:block; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.div-mid small { display:block; font-size:.72rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.chip-st { display:inline-block; margin-top:2px; font-size:.65rem; font-weight:700; border-radius:99px; padding:1px 8px; } .st-venc { background:rgba(233,69,96,.14); color:#D62839; } .st-hoje { background:rgba(245,158,11,.18); color:#b45309; }
+.div-val { text-align:right; font-weight:700; font-size:.92rem; white-space:nowrap; } .div-val small { display:block; font-size:.65rem; font-weight:400; color:var(--text-muted); }
+.div-hist summary { font-size:.7rem; color:var(--purple); cursor:pointer; } .div-hist div { white-space:pre-line; font-size:.72rem; color:var(--text-muted); }
+.div-item .dropdown > button { padding:4px 8px; color:var(--text-muted); }
+.aviso-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border-color); font-size:.9rem; } .aviso-item:last-child { border:0; } .aviso-item i { margin-top:3px; color:var(--purple); }
+#btn-calc-float { display:none !important; }
+#calc-bolha { position:fixed; z-index:1500; width:52px; height:52px; border-radius:50%; border:0; background:var(--purple); color:#fff; font-size:1.15rem; display:none; align-items:center; justify-content:center; box-shadow:0 8px 22px rgba(0,0,0,.3); }
+#calc-container { z-index:1500; }
+#calc-alvo { position:fixed; left:50%; bottom:96px; transform:translateX(-50%); z-index:1600; display:none; flex-direction:column; align-items:center; gap:4px; width:84px; height:84px; border-radius:50%; justify-content:center; background:rgba(233,69,96,.92); color:#fff; font-size:1.4rem; transition:transform .15s; }
+#calc-alvo small { font-size:.58rem; line-height:1.1; text-align:center; } #calc-alvo.ativo { transform:translateX(-50%) scale(1.18); background:#D62839; }
+
+/* ===== v15: menu inferior, botão Pix, Dívidas coloridas, botão "gastar por dia" ===== */
+.nav-btn { font-size:11px; }
+.nav-btn i { width:50px; height:30px; border-radius:15px; display:flex; align-items:center; justify-content:center; margin:0 auto 3px; font-size:18px; transition:background .25s,color .25s,transform .2s; }
+.nav-btn.active i { background:var(--chip); color:var(--purple); }
+.btn-add-main { width:60px; height:60px; border-radius:50%; margin-top:-34px; }
+.btn-add-main .pix-ico { width:30px; height:30px; display:block; }
+.btn-add-main:active { transform:scale(.9); }
+#dividas .nav-pills .nav-link[data-bs-target="#aba-eu-devo"].active { background:#D62839; color:#fff; }
+#dividas .nav-pills .nav-link[data-bs-target="#aba-me-devem"].active { background:#10b981; color:#fff; }
+#card-diario { background:transparent !important; border:0 !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important; }
+.diario-btn { width:100%; display:flex; align-items:center; gap:10px; background:var(--chip); color:var(--text-main); border:0; border-radius:14px; padding:9px 12px; text-align:left; }
+.diario-ic { width:30px; height:30px; flex:0 0 30px; border-radius:10px; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
+.diario-tx { flex:1; font-size:.9rem; font-weight:600; } .diario-seta { color:var(--text-muted); font-size:.8rem; transition:transform .25s; }
+.diario-info { display:none; margin-top:8px; background:var(--bg-card); border:1px solid var(--border-color); border-left:4px solid var(--accent); border-radius:14px; padding:12px 14px; }
+#card-diario.aberto .diario-info { display:block; } #card-diario.aberto .diario-seta { transform:rotate(180deg); }
+
+/* ===== v16: formulários completos + clientes ===== */
+.mais-det { border:1px solid var(--border-color); border-radius:12px; padding:8px 12px; background:var(--chip); } .mais-det summary { font-size:.85rem; font-weight:600; color:var(--purple); cursor:pointer; }
+.compra-prev { font-size:.78rem; color:var(--text-muted); background:var(--chip); border-radius:10px; padding:8px 10px; } .compra-prev i { color:var(--purple); }
+.st-ativo { background:rgba(16,185,129,.15); color:#0f9d6b; } .st-lead { background:rgba(245,158,11,.18); color:#b45309; } .st-inativo { background:rgba(148,163,184,.22); color:var(--text-muted); }
+.cli-lin { display:flex; gap:10px; align-items:flex-start; font-size:.85rem; padding:3px 0; } .cli-lin i { width:16px; color:var(--purple); margin-top:3px; text-align:center; }
+.cli-obs { margin-top:8px; background:var(--chip); border-radius:10px; padding:8px 10px; font-size:.8rem; white-space:pre-line; }
+.cli-int { border-left:3px solid var(--purple); padding:2px 0 2px 10px; margin-bottom:6px; font-size:.82rem; }
+#cli-chips .btn-status-filter { border:0; border-radius:99px; font-size:.75rem; padding:3px 12px; background:var(--chip); color:var(--text-muted); white-space:nowrap; } #cli-chips .btn-status-filter.active { background:var(--purple); color:#fff; }
+.modal-dialog-scrollable .modal-body { overflow-y:auto; }
+
+/* ===== v17 ===== */
+.section h4,.section h6 { color:var(--text-main); }
+#cartoes > div:first-child, #compras-cartao > div:first-child h4 { display:none; }
+#compras-cartao > div:first-child { margin-bottom:4px !important; }
+#fab-add { position:fixed; right:16px; bottom:calc(92px + env(safe-area-inset-bottom)); width:54px; height:54px; border-radius:50%; border:0; background:var(--purple); color:#fff; font-size:1.3rem; display:none; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(0,0,0,.28); z-index:1000; }
+#fab-add:active { transform:scale(.92); } @media (min-width:992px) { #fab-add { bottom:28px; } }
+#menuSidebar .offcanvas-body { padding:4px 0 24px; }
+.menu-titulo { font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted); padding:16px 20px 6px; }
+.menu-item { display:flex; align-items:center; gap:12px; width:calc(100% - 16px); margin:1px 8px; padding:7px 10px; border:0; background:transparent; border-radius:12px; color:var(--text-main); text-align:left; font-size:.93rem; text-decoration:none; }
+.menu-item:hover,.menu-item:active { background:var(--chip); color:var(--text-main); }
+.menu-item i { flex:0 0 34px; width:34px; height:34px; border-radius:10px; background:var(--chip); color:var(--purple); display:flex; align-items:center; justify-content:center; font-size:15px; line-height:1; }
+.menu-item span { flex:1; min-width:0; }
+.menu-item.menu-danger { color:#D62839; } .menu-item.menu-danger i { background:rgba(233,69,96,.12); color:#D62839; }
+.cc-resumo { border-radius:18px; padding:14px 16px; margin-bottom:6px; box-shadow:0 8px 20px rgba(0,0,0,.18); } .cc-resumo .fp-valor { font-size:1.5rem; }
+.cc-sec { display:flex; justify-content:space-between; align-items:center; margin:16px 2px 8px; font-size:.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em; } .cc-sec b { color:var(--text-main); font-size:.92rem; } .cc-sec i { margin-right:6px; color:var(--purple); } .cc-sec.emp i { color:#f59e0b; }
+.cc-titulo-emp { margin:24px 0 0; padding-top:14px; border-top:2px dashed var(--border-color); font-weight:800; font-size:.95rem; } .cc-titulo-emp i { color:#f59e0b; margin-right:8px; }
+.cc-item { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:12px 14px; margin-bottom:10px; }
+.cc-l1 { display:flex; align-items:center; gap:8px; } .cc-desc { flex:1; min-width:0; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .cc-parc { font-weight:800; font-size:1rem; white-space:nowrap; }
+.cc-badge { background:var(--purple); color:#fff; border-radius:99px; font-size:.7rem; font-weight:700; padding:2px 9px; white-space:nowrap; } .cc-menu { border:0; background:transparent; color:var(--text-muted); padding:2px 6px; }
+.cc-l2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0 8px; } .cc-l2 small { display:block; font-size:.7rem; color:var(--text-muted); } .cc-l2 b { font-size:.98rem; }
+.cc-bar { height:6px; border-radius:99px; background:var(--chip); overflow:hidden; margin-bottom:8px; } .cc-bar > div { height:100%; background:var(--purple); border-radius:99px; }
+.cc-l3 { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:.76rem; color:var(--text-muted); margin-top:4px; } .cc-l3 i { color:var(--purple); margin-right:4px; }
+.cc-pags { margin-top:8px; padding:6px 10px; background:var(--chip); border-radius:10px; font-size:.72rem; color:var(--text-muted); } .cc-pags b { display:block; text-transform:uppercase; font-size:.62rem; }
+#dividas .home-tile { padding:16px 14px; gap:12px; } #dividas .home-tile > i { font-size:1.6rem; } #dividas .home-tile small { font-size:.8rem; } #dividas .home-tile b { font-size:1.3rem; }
+.div-item { padding:12px; gap:12px; } .div-av { width:44px; height:44px; flex:0 0 44px; font-size:1.05rem; } .div-mid b { font-size:1.02rem; } .div-mid small { font-size:.76rem; } .div-val { font-size:1.05rem; }
+#lista-historico-dividas, #lista-historico-dividas :is(p,div,span,small,h6) { font-size:.78rem !important; } #lista-historico-dividas p, #lista-historico-dividas .text-center { padding:.4rem 0 !important; margin:0 !important; }
+.div-actions .btn { flex:1; }
+
+
+/* ===================== v18: correções e peças que antes eram injetadas ===================== */
+/* Botões do topo (calculadora, data, modo escuro) sempre acima da decoração do card */
+.main-balance-card > *, .fp-header > * { position: relative; z-index: 2; }
+.hero-bar, .hero-right, .hero-left { position: relative; z-index: 5; }
+.hero-ic { cursor: pointer; touch-action: manipulation; }
+
+/* Saldo do mês negativo: amarelo-âmbar, bem visível sobre o roxo e o verde (Gastos continua vermelho no fundo branco) */
+#txt-saldo-geral.saldo-negativo { color: #ffd23f !important; text-shadow: 0 1px 3px rgba(0,0,0,.35); font-weight: 800; }
+
+/* Seletor de mês */
+.mes-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mes-op { border: 1px solid var(--border-color); background: var(--bg-card, transparent); color: inherit; border-radius: 12px; padding: 12px 0; font-weight: 600; }
+.mes-op.hoje { border-color: var(--purple); }
+.mes-op.ativo { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+/* Abas do cartão (Fatura do mês / Todas as compras) */
+.seg-abas { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--chip, rgba(0,0,0,.06)); margin-bottom: 12px; }
+.seg-abas button { flex: 1; border: 0; background: transparent; color: inherit; padding: 8px 6px; border-radius: 10px; font-size: .85rem; font-weight: 600; }
+.seg-abas button.ativo { background: var(--purple); color: #fff; }
+
+/* Avisos na tela */
+#toast-box { position: fixed; top: calc(12px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 20000; display: flex; flex-direction: column; gap: 8px; width: min(92vw, 420px); pointer-events: none; }
+.toast-fp { pointer-events: auto; padding: 12px 16px; border-radius: 14px; color: #fff; font-size: .9rem; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.25); opacity: 0; transform: translateY(-8px); transition: .25s; }
+.toast-fp.on { opacity: 1; transform: none; }
+.toast-fp.ok { background: #10b981; }
+.toast-fp.erro { background: #D62839; }
+
+
+/* ===================== v19: histórico de fatura (status, filtros, pessoas) ===================== */
+.cc-filtros { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.cc-filtros .div-search { flex: 1; margin: 0; }
+.cc-filtros .form-select { width: 118px; border-radius: 12px; }
+.cc-resumo.paga { box-shadow: 0 8px 20px rgba(16,185,129,.35); }
+.cc-resumo.pendente { box-shadow: 0 8px 20px rgba(239,68,68,.35); }
+.fat-selo { display: inline-block; font-size: .72rem; font-weight: 800; padding: 3px 10px; border-radius: 99px; background: rgba(255,255,255,.22); letter-spacing: .02em; }
+.fat-btn { display: block; width: 100%; margin-top: 10px; border: 0; border-radius: 12px; padding: 9px; font-weight: 700; font-size: .85rem; background: rgba(255,255,255,.95); color: #1c1e21; }
+.cc-resumo.paga .fat-btn { color: #047857; } .cc-resumo.pendente .fat-btn { color: #a31d2a; }
+.cc-item.pend { border-left: 4px solid #D62839; }
+.cc-item.paga { border-left: 4px solid #10b981; background: rgba(16,185,129,.07); }
+.cc-item.pend .cc-badge { background: #D62839; } .cc-item.paga .cc-badge { background: #10b981; }
+.cc-item.pend .cc-bar > div { background: #D62839; } .cc-item.paga .cc-bar > div { background: #10b981; }
+.cc-st { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; font-weight: 800; padding: 2px 9px; border-radius: 99px; }
+.cc-st.pend { background: rgba(239,68,68,.13); color: #dc2626; } .cc-st.paga { background: rgba(16,185,129,.15); color: #059669; }
+/* cartão emprestado: cada pessoa num bloco separado por uma faixa colorida */
+.emp-pessoa { --pc: #D62839; margin-top: 22px; padding-top: 12px; border-top: 3px solid var(--pc); border-radius: 2px; }
+.emp-pessoa + .emp-pessoa { margin-top: 30px; }
+.emp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.emp-av { width: 30px; height: 30px; border-radius: 50%; background: var(--purple); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
+.emp-nome { font-size: 1rem; }
+.emp-pessoa .cc-item { border-left-color: var(--pc); }
+.emp-pessoa .cc-item.pend { border-left-color: #D62839; } .emp-pessoa .cc-item.paga { border-left-color: #10b981; }
+
+/* sem borda colorida no cartão: o status aparece só no selo Paga/Pendente */
+.fp-cartao.fat-paga, .fp-cartao.fat-pend { box-shadow: 0 12px 26px rgba(0,0,0,.22); border: 0; outline: 0; }
+.fp-pill.fp-st.ok { background: #10b981 !important; color: #fff !important; } .fp-pill.fp-st.pend { background: #D62839 !important; color: #fff !important; }
+
+/* ===================== v19: dívidas recorrentes ===================== */
+.rec-sw { background: var(--chip, rgba(0,0,0,.05)); }
+.rec-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 2px; }
+.rec-chip { border: 1px solid var(--border-color); background: transparent; color: inherit; border-radius: 99px; font-size: .72rem; font-weight: 700; padding: 3px 10px; }
+.rec-chip.ok { background: #10b981; border-color: #10b981; color: #fff; }
+.rec-chip.atr { border-color: #D62839; color: #D62839; }
+
+/* v20: itens da fatura compactos; detalhes ao tocar */
+.cc-compacto { cursor: pointer; }
+.cc-compacto .cc-det { display: none; margin-top: 4px; }
+.cc-compacto.aberto .cc-det { display: block; }
+.cc-seta { font-size: .7rem; color: var(--text-muted); transition: transform .2s; }
+.cc-compacto.aberto .cc-seta { transform: rotate(180deg); }
+.cc-quem { font-size: .76rem; color: var(--text-muted); margin-top: 2px; } .cc-quem i { color: var(--purple); margin-right: 4px; }
+
+/* abas do cartão: 5 opções, rolagem horizontal no celular */
+.seg-abas-rolar { overflow-x: auto; scrollbar-width: none; }
+.seg-abas-rolar::-webkit-scrollbar { display: none; }
+.seg-abas-rolar button { flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; }
+
+/* dívidas: lista compacta (toque para abrir os detalhes) */
+.div-item.dv-compacto { display: block; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
+.dv-l1 { display: flex; align-items: center; gap: 8px; }
+.dv-l1 .div-av { width: 34px; height: 34px; flex: 0 0 34px; font-size: .9rem; }
+.dv-nome { flex: 1; min-width: 0; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dv-l1 .div-val { font-size: 1rem; }
+.dv-det { display: none; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-color); font-size: .82rem; }
+.dv-compacto.aberto .dv-det { display: block; }
+.dv-compacto.aberto .cc-seta { transform: rotate(180deg); }
+.dv-linha { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; }
+.dv-linha span { color: var(--text-muted); } .dv-linha span i { width: 16px; text-align: center; margin-right: 4px; }
+.dv-sub { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
+.dv-desc { margin-top: 8px; } .dv-desc div { white-space: pre-line; color: var(--text-muted); }
+.dv-compacto .cc-badge { background: var(--purple); }
+
+/* cobrança por pessoa (cartão emprestado) */
+.emp-btn { border: 0; background: rgba(0,0,0,.07); color: inherit; width: 30px; height: 30px; border-radius: 50%; margin-left: 6px; flex: 0 0 30px; }
+.emp-btn.wa { background: #25d366; color: #fff; }
+.btn-cobrar { width: 100%; margin-top: 8px; border: 0; background: #25d366; color: #fff; font-weight: 700; border-radius: 12px; padding: 9px; }
+/* notificações */
+.aviso-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+.aviso-item .av-txt { flex: 1; min-width: 0; font-size: .88rem; font-weight: 600; }
+.aviso-item.lida .av-txt { font-weight: 400; opacity: .6; }
+.av-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #D62839; margin-right: 6px; }
+.av-btn { border: 0; background: transparent; color: var(--text-muted); padding: 2px 7px; }
+.av-btn.del:hover { color: #D62839; }
+/* gastos por forma de pagamento */
+.fg-linha { margin-bottom: 12px; } .fg-bar { height: 8px; border-radius: 99px; background: rgba(0,0,0,.08); margin-top: 5px; overflow: hidden; } .fg-bar > div { height: 100%; border-radius: 99px; }
+
+.emp-acoes { margin-left: auto; display: inline-flex; align-items: center; }
+
+/* extrato por dia */
+.dia-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+.dia-chips { flex: 1; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px; }
+.dia-chips::-webkit-scrollbar { display: none; }
+.dia-chip { flex: 0 0 auto; position: relative; border: 1px solid var(--border-color); background: var(--bg-card); color: inherit; border-radius: 99px; padding: 6px 13px; font-size: .82rem; font-weight: 600; white-space: nowrap; }
+.dia-chip.ativo { background: var(--purple); border-color: var(--purple); color: #fff; }
+.dia-cal input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.dia-seta { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--bg-card); color: inherit; }
+.dia-nota { margin: 8px 0 4px; font-size: .82rem; color: var(--text-muted); }
+
+/* calendário completo */
+.cal-grade { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-sem { text-align: center; font-size: .72rem; font-weight: 700; color: var(--text-muted); padding: 4px 0; }
+.cal-dia { position: relative; border: 0; background: transparent; color: inherit; border-radius: 12px; padding: 8px 0 12px; font-weight: 600; font-size: .9rem; }
+.cal-dia.hoje { box-shadow: inset 0 0 0 1.5px var(--purple); }
+.cal-dia.ativo { background: var(--purple); color: #fff; }
+.cal-pts { position: absolute; left: 0; right: 0; bottom: 3px; display: flex; justify-content: center; gap: 3px; }
+.cal-pts b, .cal-leg b { display: inline-block; width: 5px; height: 5px; border-radius: 50%; }
+.cal-leg b { width: 7px; height: 7px; margin-right: 4px; }
+.cal-pts b.e, .cal-leg b.e { background: #10b981; } .cal-pts b.s, .cal-leg b.s { background: #D62839; }
+.cal-dia.ativo .cal-pts b { box-shadow: 0 0 0 1px #fff; }
+.cal-leg { display: flex; gap: 14px; justify-content: center; font-size: .72rem; color: var(--text-muted); margin-top: 8px; }
+.cal-titulo { border: 0; background: transparent; color: inherit; font-weight: 800; font-size: 1.05rem; }
+.cal-link { cursor: pointer; } #hero-mes-atual.cal-link::after, #fp-mes-atual.cal-link::after { content: ' ▾'; font-size: .7em; opacity: .85; }
+.hero-dia-chip { display: flex; justify-content: center; }
+.hero-dia-chip:empty { display: none; }
+.chip-dia { border: 0; border-radius: 99px; background: rgba(255,255,255,.22); color: #fff; padding: 4px 12px; font-size: .75rem; font-weight: 700; margin: 4px 0; }
+/* extrato: Mês todo / Escolher dia */
+.dia-seg { display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: var(--chip, rgba(0,0,0,.06)); margin-bottom: 10px; }
+.dia-op { flex: 1; border: 0; background: transparent; color: inherit; padding: 8px 6px; border-radius: 10px; font-size: .85rem; font-weight: 600; }
+.dia-op.ativo { background: var(--purple); color: #fff; }
+.dia-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.dia-label { flex: 1; border: 1px solid var(--border-color); background: var(--bg-card); color: inherit; border-radius: 14px; padding: 9px 12px; font-weight: 800; font-size: 1rem; }
+
+/* ===== menu na barra de baixo + topo mais livre ===== */
+.bottom-nav { display: grid; grid-template-columns: 1.5fr 1.5fr 64px 1fr 1fr 1fr; align-items: center; justify-content: normal; }
+.bottom-nav .btn-add-main { justify-self: center; }
+.nav-btn { min-width: 0; }
+.hero-meses { gap: 14px; }
+.hero-mes { white-space: nowrap; }
+#hero-mes-atual, #fp-mes-atual { white-space: nowrap; font-size: 1.05rem; }
+.hero-left { min-width: 114px; }
+#menuSidebar.offcanvas-end { border-left: 1px solid var(--border-color); }
+@media (min-width: 992px) {
+  .bottom-nav { grid-template-columns: 1fr 1fr 64px 1fr 1fr; }
+  .nav-menu { display: none; }
+  #menuSidebar.offcanvas-end { left: 0 !important; right: auto !important; border-left: 0; }
+}
+
+/* ======================================================================
+   TELA INICIAL — visual "vidro" (igual ao modelo enviado)
+   ====================================================================== */
+:root { --bg-body: #f3f0fb; --card-sombra: 0 8px 22px rgba(87, 0, 95, .10); }
+[data-bs-theme="dark"] { --bg-body: #0b0e11; --card-sombra: 0 8px 22px rgba(0, 0, 0, .35); }
+
+/* faixa roxa que desaparece suavemente no fundo */
+html:not([data-cor="verde"]) #inicio .main-balance-card { background: linear-gradient(180deg, #57005F 0%, #6b0a76 55%, #7a1a85 72%, var(--bg-body) 100%); padding-bottom: 78px; }
+html[data-cor="verde"] #inicio .main-balance-card { background: linear-gradient(180deg, #0a8f4d 0%, #14a85f 60%, var(--bg-body) 100%) !important; padding-bottom: 78px; }
+#inicio .main-balance-card::after { width: 260px; height: 260px; top: -90px; right: -70px; background: rgba(255, 255, 255, .12); }
+#inicio .home-sheet { background: transparent; margin-top: -48px; border-radius: 0; padding-top: 0; }
+
+/* topo: sino com bolinha e mês em pílula */
+#inicio .hero-bar { align-items: center; }
+.hero-badge { min-width: 11px; width: 11px; height: 11px; font-size: 0; padding: 0; top: 7px; right: 8px; border: 1.5px solid rgba(255, 255, 255, .85); }
+.hero-meses { gap: 10px; align-items: center; }
+.hero-mes { font-size: 1.05rem; color: rgba(255, 255, 255, .72); }
+#hero-mes-atual, #fp-mes-atual { border: 1.5px solid rgba(255, 255, 255, .38) !important; background: rgba(50, 15, 120, .38); border-radius: 99px; padding: 6px 16px !important; color: #fff; font-size: 1.1rem; font-weight: 800; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05); }
+#hero-mes-atual.cal-link::after, #fp-mes-atual.cal-link::after { content: ' ▾'; font-size: .72em; }
+
+/* cartão de saldo (vidro) */
+#inicio .hero-saldo { margin-top: 18px; padding: 16px 18px 16px; border-radius: 26px; background: linear-gradient(145deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .07)); border: 1.5px solid rgba(255, 255, 255, .38); box-shadow: 0 10px 30px rgba(40, 10, 110, .22), inset 0 1px 0 rgba(255, 255, 255, .25); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.saldo-label { display: inline-flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 500; opacity: .95; }
+.saldo-label i { font-size: 1.25rem; opacity: .9; }
+#inicio .hero-saldo h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -.5px; color: #fff; text-shadow: 0 2px 10px rgba(255, 255, 255, .25); }
+#inicio .hero-saldo h1.neg { -webkit-text-stroke: 1.5px #D62839; text-shadow: 0 2px 14px rgba(214, 40, 57, .55); }
+#btn-olho { width: 52px; height: 36px; border: 1.5px solid rgba(255, 255, 255, .45) !important; border-radius: 99px; background: rgba(255, 255, 255, .14); display: inline-flex; align-items: center; justify-content: center; }
+#inicio .hero-saldo small.d-block { font-size: 1rem; opacity: .95 !important; display: flex !important; align-items: center; gap: 10px; margin-top: 6px; }
+#hero-atualizado::before, #txt-saldo-acum::before { font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 1.1rem; width: 20px; text-align: center; opacity: .9; }
+#hero-atualizado::before { content: "\f073"; }
+#txt-saldo-acum::before { content: "\e473"; }
+#inicio .hero-detalhes { right: 16px; bottom: 14px; border: 1.5px solid rgba(255, 255, 255, .75); border-radius: 99px; padding: 8px 18px; font-size: .98rem; font-weight: 700; background: rgba(255, 255, 255, .08); }
+.chip-seq { background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 999px; padding: 6px 14px; font-size: .95rem; box-shadow: 0 6px 14px rgba(245, 158, 11, .4); }
+
+/* Ganhos / Gastos */
+#inicio .home-tiles { gap: 12px; margin-bottom: 18px; }
+#inicio .home-tile { gap: 12px; padding: 14px 14px; border-radius: 24px; border: 1.5px solid rgba(255, 255, 255, .8); box-shadow: var(--card-sombra); }
+#inicio .home-tile:nth-child(1) { background: linear-gradient(135deg, #f2f4ff, #eaf7f0); }
+#inicio .home-tile:nth-child(2) { background: linear-gradient(135deg, #fff1f4, #fde8ec); }
+#inicio .home-tile > i { flex: 0 0 52px; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 16px; font-size: 1.35rem; }
+#inicio .home-tile:nth-child(1) > i { background: #c9f2dc; color: #15a34a; }
+#inicio .home-tile:nth-child(2) > i { background: #fbcdd4; color: #D62839; }
+#inicio .home-tile small { font-size: .95rem; color: var(--text-main); opacity: .8; }
+#inicio .home-tile b { font-size: 1.35rem; font-weight: 800; }
+[data-bs-theme="dark"] #inicio .home-tile { border-color: rgba(255, 255, 255, .06); }
+[data-bs-theme="dark"] #inicio .home-tile:nth-child(1) { background: rgba(16, 185, 129, .12); }
+[data-bs-theme="dark"] #inicio .home-tile:nth-child(2) { background: rgba(214, 40, 57, .12); }
+
+/* ações rápidas: 5 cartões visíveis, o resto rola */
+#acoes-rapidas { gap: 10px; padding: 4px 2px 18px; }
+.acao-rapida { flex: 0 0 calc((100% - 40px) / 5); width: auto; font-size: .92rem; font-weight: 700; }
+.acao-rapida i { width: 100%; height: 66px; margin: 0 0 8px; border-radius: 22px; background: linear-gradient(145deg, #ffffff, #f3effc); border: 1.5px solid rgba(255, 255, 255, .9); box-shadow: var(--card-sombra); font-size: 1.7rem; color: var(--purple); }
+.acao-rapida.destaque i { height: 70px; border: 0; background: linear-gradient(145deg, #7a1a85, #3d0044); box-shadow: 0 12px 24px rgba(61, 0, 68, .4); font-size: 1.8rem; }
+[data-bs-theme="dark"] .acao-rapida i { background: #1b2030; border-color: rgba(255, 255, 255, .06); }
+html[data-cor="verde"] .acao-rapida.destaque i { background: linear-gradient(145deg, #1ec677, #0a8f4d); box-shadow: 0 12px 24px rgba(10, 143, 77, .4); }
+
+/* Quanto posso gastar por dia */
+.diario-btn { padding: 12px 14px; gap: 14px; border-radius: 24px; background: linear-gradient(135deg, #efe9fd, #e7defb); border: 1.5px solid rgba(87, 0, 95, .14); box-shadow: var(--card-sombra); }
+.diario-ic { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 17px; font-size: 1.3rem; background: linear-gradient(145deg, #7a1a85, #3d0044); box-shadow: 0 8px 16px rgba(61, 0, 68, .3); }
+.diario-tx { font-size: 1.2rem; font-weight: 800; }
+.diario-seta { font-size: 1rem; }
+[data-bs-theme="dark"] .diario-btn { background: #1b2030; border-color: rgba(255, 255, 255, .07); }
+
+/* títulos de seção */
+.home-sec-head { margin: 4px 2px 12px; }
+.home-sec-head h6 { font-size: 1.45rem; font-weight: 800; }
+.home-sec-head small { font-size: 1.05rem; font-weight: 700; color: var(--purple); }
+.home-sec-head small::after { content: ' ›'; font-size: 1.3em; line-height: 0; }
+
+/* próximos lançamentos */
+.prox-card { flex: 0 0 48%; border-radius: 24px; padding: 14px; border: 1.5px solid rgba(255, 255, 255, .9); box-shadow: var(--card-sombra); }
+.prox-top { gap: 10px; }
+.prox-top .ic-box { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 15px; font-size: 1.15rem; background: #efe8fc !important; color: var(--purple) !important; }
+.prox-top b { font-size: 1.1rem; font-weight: 800; flex: 1; min-width: 0; }
+.prox-top::after { content: '›'; font-size: 1.8rem; line-height: 1; color: var(--text-muted); }
+.prox-card > small { font-size: .98rem; margin: 6px 0 8px; }
+.prox-bot { flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 10px; }
+.prox-bot small { display: inline-flex; align-items: center; gap: 6px; border-radius: 12px; padding: 6px 10px; font-size: .95rem; font-weight: 700; background: var(--chip); }
+.prox-bot small::before { content: "\f073"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: .85em; }
+.prox-bot small.text-danger { background: rgba(214, 40, 57, .1); }
+.prox-bot b { margin-left: auto; border-radius: 12px; padding: 6px 12px; font-size: 1.1rem; font-weight: 800; }
+.prox-bot b.text-success { background: rgba(16, 185, 129, .13); } .prox-bot b.text-danger { background: rgba(214, 40, 57, .1); }
+
+/* últimas transações */
+.trans { gap: 14px; padding: 14px 16px; border-radius: 24px; border: 1.5px solid rgba(255, 255, 255, .9); box-shadow: var(--card-sombra); }
+.trans .ic-box.round { width: 58px; height: 58px; flex: 0 0 58px; border-radius: 19px; font-size: 1.5rem; }
+.trans-mid b { font-size: 1.2rem; font-weight: 800; }
+.trans-mid small { font-size: 1rem; }
+.trans-end b { font-size: 1.15rem; font-weight: 800; }
+[data-bs-theme="dark"] .prox-card, [data-bs-theme="dark"] .trans { border-color: rgba(255, 255, 255, .06); }
+
+/* barra de baixo */
+.bottom-nav { border-radius: 30px 30px 0 0; border-top: 0; padding-top: 10px; box-shadow: 0 -10px 30px rgba(87, 0, 95, .14); }
+.nav-btn { font-size: .9rem; font-weight: 500; position: relative; border-radius: 22px; padding: 6px 0 8px; }
+.nav-btn.active { background: var(--chip); font-weight: 800; }
+.nav-btn.active i { background: transparent; }
+.nav-btn.active::after { content: ''; position: absolute; left: 50%; bottom: 3px; width: 62%; height: 3px; border-radius: 3px; background: var(--purple); transform: translateX(-50%); }
+.nav-btn i { font-size: 1.45rem; }
+.btn-add-main { width: 66px; height: 66px; margin-top: -40px; border: 0; background: linear-gradient(145deg, #7a1a85, #3d0044); box-shadow: 0 0 0 7px rgba(255, 255, 255, .92), 0 0 0 11px rgba(87, 0, 95, .13), 0 14px 28px rgba(61, 0, 68, .4); }
+[data-bs-theme="dark"] .btn-add-main { box-shadow: 0 0 0 7px #151921, 0 0 0 11px rgba(87, 0, 95, .2), 0 14px 28px rgba(0, 0, 0, .5); }
+html[data-cor="verde"] .btn-add-main { background: linear-gradient(145deg, #1ec677, #0a8f4d); }
+
+/* ---- ajustes finos do visual inicial ---- */
+#inicio .hero-saldo h1, #inicio .hero-saldo h1.money-value { color: #fff !important; font-size: 2.3rem; }
+#inicio .hero-saldo h1.neg { -webkit-text-stroke: 1.2px #D62839; paint-order: stroke fill; text-shadow: 0 2px 14px rgba(214, 40, 57, .6); }
+#inicio .hero-saldo small.d-block { font-size: .86rem; }
+#hero-atualizado::before, #txt-saldo-acum::before { font-size: 1rem; width: 18px; }
+#txt-saldo-acum { max-width: calc(100% - 104px); }
+#inicio .hero-detalhes { right: 14px; bottom: 26px; padding: 7px 14px; font-size: .9rem; }
+.saldo-label { font-size: 1.1rem; }
+.chip-seq { padding: 5px 12px; font-size: .88rem; }
+#inicio .home-tile { gap: 8px; padding: 13px 10px; }
+#inicio .home-tile > i { flex: 0 0 42px; width: 42px; height: 42px; border-radius: 14px; font-size: 1.15rem; }
+#inicio .home-tile small { font-size: .88rem; }
+#inicio .home-tile b { font-size: 1.02rem; letter-spacing: -.2px; }
+.diario-btn { gap: 12px; }
+.diario-ic { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 15px; font-size: 1.15rem; }
+.diario-tx { font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prox-card > small { font-size: .85rem; }
+.prox-bot small { font-size: .85rem; padding: 5px 9px; }
+.prox-bot b { font-size: 1rem; padding: 5px 10px; }
+.prox-top b { font-size: 1.02rem; }
+.trans-mid b { font-size: 1.1rem; } .trans-mid small { font-size: .9rem; } .trans-end b { font-size: 1.05rem; }
+.trans .ic-box.round { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 17px; font-size: 1.3rem; }
+#inicio .hero-saldo small#hero-atualizado, #inicio .hero-saldo small#txt-saldo-acum { display: block !important; max-width: calc(100% - 104px); line-height: 1.35; }
+#hero-atualizado::before, #txt-saldo-acum::before { display: inline-block; margin-right: 8px; }
+.nav-btn { font-size: .82rem; }
+#inicio .hero-saldo small#hero-atualizado, #inicio .hero-saldo small#txt-saldo-acum { font-size: .8rem; max-width: calc(100% - 98px); white-space: nowrap; }
+#hero-atualizado::before, #txt-saldo-acum::before { margin-right: 6px; width: 16px; }
+/* sombras dos carrosséis não podem ser cortadas (evita "retângulos" claros) */
+.prox-card, .acao-rapida i { box-shadow: 0 6px 14px rgba(87, 0, 95, .10); }
+.acao-rapida.destaque i { box-shadow: 0 8px 16px rgba(61, 0, 68, .35); }
+#acoes-rapidas { padding: 10px 4px 24px; margin-bottom: -10px; }
+.h-scroll { padding: 10px 4px 24px; margin-bottom: -12px; }
+[data-bs-theme="dark"] .acao-rapida.destaque i { background: linear-gradient(145deg, #7a1a85, #3d0044); color: #fff; border: 0; }
+[data-bs-theme="dark"] #inicio .home-tile:nth-child(1) > i { background: rgba(16, 185, 129, .22); }
+[data-bs-theme="dark"] #inicio .home-tile:nth-child(2) > i { background: rgba(214, 40, 57, .22); }
+
+/* ======================= VERSÃO COMPACTA (tudo cabe na tela) ======================= */
+/* topo: 3 colunas, mês sempre centralizado, ícones menores */
+.hero-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4px; }
+.hero-left, .hero-right { min-width: 0 !important; }
+.hero-left { justify-self: start; } .hero-right { justify-self: end; }
+.hero-ic { width: 34px; height: 34px; font-size: 1rem; }
+.hero-meses { gap: 8px; justify-content: center; }
+.hero-mes { font-size: .95rem; }
+#hero-mes-atual, #fp-mes-atual { padding: 5px 13px !important; font-size: 1rem; }
+.hero-meses.com-dia .hero-mes:not(.cal-link), .fp-meses-row.com-dia .hero-mes:not(.cal-link) { display: none; }
+.hero-badge { top: 5px; right: 6px; }
+#inicio .main-balance-card { padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: 64px; }
+html:not([data-cor="verde"]) #inicio .main-balance-card, html[data-cor="verde"] #inicio .main-balance-card { padding-bottom: 64px; }
+#inicio .home-sheet { margin-top: -40px; }
+
+/* cartão de saldo menor */
+#inicio .hero-saldo { margin-top: 10px; padding: 12px 14px; border-radius: 22px; }
+.saldo-label { font-size: .95rem; gap: 8px; } .saldo-label i { font-size: 1.05rem; }
+#inicio .hero-saldo h1, #inicio .hero-saldo h1.money-value { font-size: 2rem; }
+#btn-olho { width: 44px; height: 30px; }
+.chip-seq { padding: 4px 10px; font-size: .78rem; }
+#inicio .hero-saldo small#hero-atualizado, #inicio .hero-saldo small#txt-saldo-acum { font-size: .76rem; max-width: calc(100% - 92px); }
+#inicio .hero-detalhes { right: 12px; bottom: 20px; padding: 6px 12px; font-size: .82rem; }
+
+/* Ganhos / Gastos */
+#inicio .home-tiles { gap: 10px; margin-bottom: 12px; }
+#inicio .home-tile { padding: 10px 10px; border-radius: 20px; gap: 8px; }
+#inicio .home-tile > i { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 12px; font-size: 1rem; }
+#inicio .home-tile small { font-size: .78rem; }
+#inicio .home-tile b { font-size: .92rem; }
+
+/* ações rápidas */
+#acoes-rapidas { gap: 8px; padding: 8px 4px 18px; margin-bottom: -8px; }
+.acao-rapida { font-size: .78rem; flex: 0 0 calc((100% - 32px) / 5); }
+.acao-rapida i { height: 52px; border-radius: 18px; font-size: 1.3rem; margin-bottom: 6px; }
+.acao-rapida.destaque i { height: 54px; font-size: 1.4rem; }
+
+/* gastar por dia */
+.diario-btn { padding: 8px 12px; gap: 10px; border-radius: 20px; }
+.diario-ic { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 13px; font-size: 1rem; }
+.diario-tx { font-size: .95rem; }
+
+/* títulos */
+.home-sec-head { margin: 2px 2px 8px; }
+.home-sec-head h6 { font-size: 1.15rem; }
+.home-sec-head small { font-size: .88rem; }
+
+/* próximos lançamentos */
+.prox-card { flex: 0 0 46%; padding: 11px; border-radius: 20px; }
+.prox-top { gap: 8px; }
+.prox-top .ic-box { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 13px; font-size: .95rem; }
+.prox-top b { font-size: .92rem; }
+.prox-top::after { font-size: 1.4rem; }
+.prox-card > small { font-size: .76rem; margin: 4px 0 6px; }
+.prox-bot { gap: 6px; margin-top: 6px; padding-top: 8px; }
+.prox-bot small { font-size: .74rem; padding: 4px 8px; border-radius: 10px; }
+.prox-bot b { font-size: .88rem; padding: 4px 9px; border-radius: 10px; }
+.h-scroll { padding: 8px 4px 20px; margin-bottom: -10px; gap: 10px; }
+
+/* últimas transações */
+.trans { gap: 10px; padding: 10px 12px; border-radius: 20px; margin-bottom: 8px; }
+.trans .ic-box.round { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 14px; font-size: 1.05rem; }
+.trans-mid { min-width: 0; } .trans-mid b { font-size: .98rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trans-mid small { font-size: .78rem; } .trans-end b { font-size: .95rem; white-space: nowrap; } .trans-end small { font-size: .74rem; }
+
+/* barra de baixo */
+.bottom-nav { padding-top: 8px; border-radius: 26px 26px 0 0; }
+.nav-btn { font-size: .72rem; padding: 4px 0 6px; }
+.nav-btn i { font-size: 1.2rem; height: 26px; margin-bottom: 2px; }
+.btn-add-main { width: 56px; height: 56px; margin-top: -34px; box-shadow: 0 0 0 6px rgba(255, 255, 255, .92), 0 0 0 9px rgba(87, 0, 95, .13), 0 12px 24px rgba(61, 0, 68, .4); }
+[data-bs-theme="dark"] .btn-add-main { box-shadow: 0 0 0 6px #151921, 0 0 0 9px rgba(87, 0, 95, .2), 0 12px 24px rgba(0, 0, 0, .5); }
+.btn-add-main .pix-ico { width: 26px; height: 26px; }
+
+/* ===== topo: [menu][sino][calculadora]  [mês/dia]  [calendário][modo escuro] ===== */
+.bottom-nav { grid-template-columns: 1fr 1fr 64px 1fr 1fr; }
+.nav-menu { display: none; }
+#menuSidebar.offcanvas-start { border-right: 1px solid var(--border-color); }
+.hero-bar { gap: 2px; }
+.hero-left { display: flex; align-items: center; gap: 2px; }
+.hero-right { display: flex; align-items: center; gap: 2px; }
+.hero-ic { width: 32px; height: 32px; font-size: .95rem; }
+.hero-meses { gap: 6px; }
+.hero-mes { font-size: .9rem; }
+#hero-mes-atual, #fp-mes-atual { padding: 5px 11px !important; font-size: .98rem; }
+@media (min-width: 992px) { .hero-left > .hero-ic:first-child { display: none; } }
+.cc-sec-fora, .cc-sec-paga { margin-top: 16px; }
+.cc-aviso { font-size: .75rem; color: var(--text-muted); margin: -2px 2px 8px; }
+
+/* ======================================================================
+   PALETA: Roxo açaí #57005F • Branco #FFFFFF • Amarelo #FFD400 • Vermelho #D62839
+   ====================================================================== */
+:root { --acai: #57005F; --acai-esc: #3d0044; --acai-cl: #7a1a85; --amarelo: #FFD400; --vermelho: #D62839; --purple: #57005F; --danger: #D62839; --bg-body: #f7f3f8; }
+[data-bs-theme="dark"] { --purple: #a23bb5; --bg-body: #0b0e11; }
+.text-danger { color: var(--vermelho) !important; }
+
+/* topo (Início) */
+html:not([data-cor="verde"]) #inicio .main-balance-card { background: linear-gradient(180deg, #43004b 0%, #57005F 38%, #650a70 66%, var(--bg-body) 100%); }
+.hero-mes { color: rgba(255, 255, 255, .88); }
+#hero-mes-atual, #fp-mes-atual { background: var(--amarelo) !important; color: var(--acai-esc) !important; border: 0 !important; box-shadow: 0 6px 16px rgba(255, 212, 0, .35) !important; font-weight: 800; }
+.hero-badge { background: var(--amarelo); border-color: transparent; }
+
+/* cartão de saldo */
+#inicio .hero-saldo { position: relative; overflow: hidden; background: linear-gradient(145deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .02)); border: 1.5px solid rgba(255, 255, 255, .22); box-shadow: 0 10px 28px rgba(30, 0, 36, .35); }
+#inicio .hero-saldo::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; pointer-events: none; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'><path d='M0 30 C80 22 150 36 230 28 S350 14 400 18 L400 40 L0 40Z' fill='white' fill-opacity='.06'/><path d='M170 40 C270 40 340 30 400 6 L400 40Z' fill='%23FFD400'/><path d='M170 40 C270 41 345 36 400 14 L400 40Z' fill='%23590a63'/></svg>") no-repeat bottom / 100% 100%; }
+.chip-seq { background: var(--amarelo) !important; color: var(--acai-esc) !important; box-shadow: 0 6px 14px rgba(255, 212, 0, .35); font-weight: 800; }
+.chip-seq i { color: var(--acai-esc) !important; }
+#inicio .hero-detalhes { border-color: var(--amarelo) !important; color: var(--amarelo) !important; background: transparent !important; z-index: 2; }
+#inicio .hero-saldo h1.neg { -webkit-text-stroke: 1.2px var(--vermelho); text-shadow: 0 2px 14px rgba(214, 40, 57, .55); }
+
+/* Ganhos / Gastos */
+#inicio .home-tile:nth-child(1) { background: linear-gradient(135deg, #eef9f2, #dff3e6); }
+#inicio .home-tile:nth-child(2) { background: linear-gradient(135deg, #fff2f4, #fde3e7); }
+#inicio .home-tile:nth-child(1) > i { background: #bfe9cf; color: #12803f; }
+#inicio .home-tile:nth-child(2) > i { background: #f8c6cd; color: var(--vermelho); }
+#inicio .home-tile:nth-child(2) b { color: var(--vermelho); }
+[data-bs-theme="dark"] #inicio .home-tile:nth-child(2) b { color: #ff6b7a; }
+
+/* ações rápidas */
+.acao-rapida i { color: var(--acai); background: linear-gradient(145deg, #ffffff, #f6eef8); }
+.acao-rapida { font-weight: 600; } .acao-rapida.destaque { font-weight: 800; }
+.acao-rapida.destaque i, [data-bs-theme="dark"] .acao-rapida.destaque i { background: linear-gradient(145deg, #6b0a76, #3d0044); color: var(--amarelo); box-shadow: 0 10px 22px rgba(61, 0, 68, .42); }
+[data-bs-theme="dark"] .acao-rapida i { color: #d9a3e3; }
+
+/* quanto posso gastar por dia */
+.diario-btn { background: var(--bg-card); border: 1.5px solid rgba(87, 0, 95, .10); box-shadow: 0 8px 20px rgba(87, 0, 95, .08); }
+.diario-ic { background: linear-gradient(145deg, #6b0a76, #3d0044); box-shadow: 0 6px 14px rgba(61, 0, 68, .35); }
+.diario-tx { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; white-space: normal; flex: 1; }
+.diario-tx b { font-size: .95rem; font-weight: 800; }
+.diario-tx small { font-size: .74rem; color: var(--text-muted); font-weight: 500; }
+.diario-pill { background: var(--amarelo); color: var(--acai-esc); font-weight: 800; border-radius: 999px; padding: 6px 12px; font-size: .9rem; white-space: nowrap; box-shadow: 0 4px 10px rgba(255, 212, 0, .35); }
+#card-diario.aberto .diario-seta { transform: rotate(90deg); }
+[data-bs-theme="dark"] .diario-btn { background: #151921; }
+
+/* próximos lançamentos */
+.prox-top .ic-box { background: #f1dff4 !important; color: var(--acai) !important; }
+.home-sec-head small { color: var(--acai); }
+[data-bs-theme="dark"] .home-sec-head small { color: #d9a3e3; }
+
+/* barra de baixo */
+.nav-btn.active { background: var(--acai); color: #fff; }
+.nav-btn.active i { color: #fff; }
+.nav-btn.active::after { display: none; }
+[data-bs-theme="dark"] .nav-btn.active { background: var(--purple); }
+.btn-add-main, [data-bs-theme="dark"] .btn-add-main { background: linear-gradient(145deg, #6b0a76, #3d0044); border: 4px solid var(--amarelo); color: #fff; box-shadow: 0 0 0 5px rgba(255, 255, 255, .95), 0 12px 24px rgba(61, 0, 68, .4); }
+[data-bs-theme="dark"] .btn-add-main { box-shadow: 0 0 0 5px #151921, 0 12px 24px rgba(0, 0, 0, .5); }
+.btn-add-main i { font-size: 1.5rem; }
+.diario-btn { gap: 8px; padding: 8px 10px; }
+.diario-ic { width: 36px; height: 36px; flex: 0 0 36px; border-radius: 12px; font-size: .95rem; }
+.diario-tx b { font-size: .84rem; } .diario-tx small { font-size: .68rem; }
+.diario-pill { font-size: .82rem; padding: 5px 9px; }
+.diario-seta { font-size: .85rem; }
+#hero-mes-atual, #fp-mes-atual { padding: 3px 12px !important; }
+.nav-btn { margin: 0 4px; }
+
+/* cores do Bootstrap (botões/links "primary") na paleta */
+:root { --bs-primary: #57005F; --bs-primary-rgb: 87, 0, 95; --bs-link-color: #57005F; --bs-link-color-rgb: 87, 0, 95; --bs-link-hover-color: #3d0044; --bs-focus-ring-color: rgba(87, 0, 95, .25); }
+[data-bs-theme="dark"] { --bs-primary: #a23bb5; --bs-primary-rgb: 162, 59, 181; --bs-link-color: #d9a3e3; --bs-link-color-rgb: 217, 163, 227; }
+.btn-primary { --bs-btn-bg: #57005F; --bs-btn-border-color: #57005F; --bs-btn-hover-bg: #3d0044; --bs-btn-hover-border-color: #3d0044; --bs-btn-active-bg: #3d0044; --bs-btn-active-border-color: #3d0044; --bs-btn-disabled-bg: #57005F; --bs-btn-disabled-border-color: #57005F; }
+.btn-outline-primary { --bs-btn-color: #57005F; --bs-btn-border-color: #57005F; --bs-btn-hover-bg: #57005F; --bs-btn-hover-border-color: #57005F; --bs-btn-hover-color: #fff; --bs-btn-active-bg: #57005F; --bs-btn-active-border-color: #57005F; }
+[data-bs-theme="dark"] .btn-outline-primary { --bs-btn-color: #d9a3e3; --bs-btn-border-color: #a23bb5; --bs-btn-hover-bg: #a23bb5; }
+.form-control:focus, .form-select:focus { border-color: #7a1a85; box-shadow: 0 0 0 .2rem rgba(87, 0, 95, .18); }
+.form-check-input:checked { background-color: #57005F; border-color: #57005F; }
+.btn-purple { background: var(--purple); color: #fff; }
+
+/* ===== ajustes: sem degradê, sem onda, diário recolhido, próximos compactos, dívidas clean ===== */
+html:not([data-cor="verde"]) #inicio .main-balance-card { background: linear-gradient(180deg, #43004b 0%, #57005F 100%); border-radius: 0 0 28px 28px; padding-bottom: 18px; }
+html[data-cor="verde"] #inicio .main-balance-card { background: linear-gradient(180deg, #0a8f4d 0%, #14a85f 100%) !important; border-radius: 0 0 28px 28px; padding-bottom: 18px; }
+#inicio .home-sheet { margin-top: 14px; }
+#inicio .hero-saldo::after { content: none; background: none; }
+/* quanto posso gastar por dia: só abre ao tocar na seta */
+.diario-resumo { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-weight: 700; }
+.diario-resumo .diario-pill { font-size: 1.05rem; padding: 6px 14px; }
+/* próximos lançamentos: data e valor lado a lado */
+.prox-card { flex: 0 0 56%; }
+.prox-bot { flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 6px; }
+.prox-bot small { min-width: 0; flex: 0 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .72rem; padding: 4px 7px; gap: 4px; }
+.prox-bot small::before { font-size: .75em; }
+.prox-bot b { margin-left: 0; flex: 0 0 auto; white-space: nowrap; font-size: .8rem; padding: 4px 8px; }
+/* dívidas */
+.dv-tabs { margin-bottom: 10px; }
+.dv-tab { text-align: left; border: 1.5px solid transparent; transition: border-color .15s, background .15s; }
+.dv-tab.active[data-aba="eu-devo"] { border-color: var(--vermelho); background: rgba(214, 40, 57, .08); }
+.dv-tab.active[data-aba="me-devem"] { border-color: #10b981; background: rgba(16, 185, 129, .10); }
+#dividas .div-toolbar { gap: 8px; margin-bottom: 8px; }
+.div-sort { position: relative; display: inline-flex; align-items: center; justify-content: center; margin: 0; }
+.div-sort select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+#filtros-rapidos-status { margin-bottom: 4px; }
+
+/* ======================================================================
+   FORMULÁRIOS — padrão profissional (cabeçalho, seções, campos, rodapé fixo)
+   ====================================================================== */
+.frm-modal .modal-dialog { max-width: 470px; }
+.frm { border: 0 !important; border-radius: 26px !important; background: var(--bg-card); max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(30, 0, 36, .35); }
+.frm-head { display: flex; align-items: center; gap: 12px; padding: 16px 18px 10px; flex: 0 0 auto; }
+.frm-ic { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(145deg, #6b0a76, #3d0044); box-shadow: 0 6px 14px rgba(61, 0, 68, .3); }
+.frm-ic.sm { width: 34px; height: 34px; flex-basis: 34px; border-radius: 11px; font-size: .9rem; }
+.frm-ht { min-width: 0; } .frm-ht h5 { margin: 0; font-weight: 800; font-size: 1.1rem; } .frm-ht small { color: var(--text-muted); font-size: .76rem; }
+.frm-x { margin-left: auto; flex: 0 0 34px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--chip); color: inherit; display: inline-flex; align-items: center; justify-content: center; }
+.frm-x.ms-auto { margin-left: auto; } .frm-x + .frm-x { margin-left: 0; }
+.frm-body { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px 18px 12px; }
+.frm-sec { font-size: .68rem; letter-spacing: .09em; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin: 18px 0 2px; }
+.frm-l { display: block; font-size: .76rem; font-weight: 700; color: var(--text-muted); margin: 12px 0 5px; }
+.frm .form-control, .frm .form-select { background-color: var(--chip); border: 1.5px solid transparent; border-radius: 14px; min-height: 46px; font-size: .95rem; color: inherit; }
+.frm .form-control::placeholder { color: var(--text-muted); opacity: .65; }
+.frm .form-control:focus, .frm .form-select:focus { background-color: var(--bg-card); border-color: var(--purple); box-shadow: 0 0 0 .2rem rgba(87, 0, 95, .12); }
+.frm .form-control-color { padding: 5px; height: 46px; width: 100%; }
+.frm textarea.form-control { min-height: 74px; }
+.frm-gap { height: 12px; } .frm-gap-s { height: 8px; }
+.frm-hint { display: block; font-size: .72rem; color: var(--text-muted); margin-top: 5px; line-height: 1.3; }
+.frm-info { margin-top: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(87, 0, 95, .07); color: inherit; font-size: .8rem; line-height: 1.35; }
+.frm-info:empty { display: none; }
+[data-bs-theme="dark"] .frm-info { background: rgba(162, 59, 181, .14); }
+
+/* valor em destaque */
+.frm-money { position: relative; }
+.frm-money > span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--text-muted); font-size: 1.1rem; pointer-events: none; }
+.frm-money input.form-control { height: 64px; font-size: 1.9rem; font-weight: 800; padding-left: 54px; border-radius: 18px; letter-spacing: -.5px; }
+.frm-money.sm > span { font-size: .85rem; left: 14px; }
+.frm-money.sm input.form-control { height: 46px; font-size: 1rem; font-weight: 700; padding-left: 40px; border-radius: 14px; letter-spacing: 0; }
+.frm-modal[data-tone="saida"] .frm-money input, .frm-modal[data-tone="eu-devo"] .frm-money input { color: var(--vermelho); }
+.frm-modal[data-tone="entrada"] .frm-money input, .frm-modal[data-tone="me-devem"] .frm-money input { color: #10b981; }
+
+/* controle segmentado, atalhos e seletor numérico */
+.frm-seg { display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: var(--chip); }
+.frm-seg button { flex: 1; border: 0; background: transparent; color: var(--text-muted); border-radius: 12px; padding: 10px 8px; font-weight: 700; font-size: .88rem; transition: background .15s, color .15s; }
+.frm-seg button.on { background: var(--purple); color: #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, .18); }
+.frm-modal[data-tone="saida"] .frm-seg[data-tones] button.on, .frm-modal[data-tone="eu-devo"] .frm-seg[data-tones] button.on { background: var(--vermelho); }
+.frm-modal[data-tone="entrada"] .frm-seg[data-tones] button.on, .frm-modal[data-tone="me-devem"] .frm-seg[data-tones] button.on { background: #10b981; }
+.frm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.frm-chips button { border: 0; border-radius: 99px; padding: 5px 13px; font-size: .78rem; font-weight: 700; background: var(--chip); color: inherit; }
+.frm-chips button.on { background: var(--purple); color: #fff; }
+.frm-chips button:disabled { opacity: .45; }
+.frm-step { display: flex; align-items: center; gap: 8px; }
+.frm-step button { flex: 0 0 46px; height: 46px; border: 0; border-radius: 14px; background: var(--chip); color: inherit; }
+.frm-step input { text-align: center; font-weight: 800; }
+
+/* interruptor */
+.frm-switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--chip); cursor: pointer; margin: 0; }
+.frm-switch b { display: block; font-size: .88rem; } .frm-switch small { display: block; font-size: .72rem; color: var(--text-muted); line-height: 1.25; margin-top: 1px; }
+.frm-switch .form-check-input { -webkit-appearance: none; appearance: none; flex: 0 0 46px; width: 46px; height: 26px; margin: 0; border: 0; border-radius: 99px; background: #c8c2cb; position: relative; transition: background .2s; box-shadow: none !important; }
+.frm-switch .form-check-input::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+.frm-switch .form-check-input:checked { background: var(--purple); }
+.frm-switch .form-check-input:checked::after { transform: translateX(20px); }
+.frm-switch .form-check-input:disabled { opacity: .5; }
+
+/* "Mais detalhes" */
+.frm .mais-det { margin-top: 14px; border: 0; background: none; padding: 0; }
+.frm .mais-det summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--chip); font-weight: 700; font-size: .85rem; }
+.frm .mais-det summary::-webkit-details-marker { display: none; }
+.frm .mais-det summary::after { content: "\f078"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: .7rem; color: var(--text-muted); transition: transform .2s; }
+.frm .mais-det[open] summary::after { transform: rotate(180deg); }
+.mais-in { padding: 2px 2px 4px; }
+
+/* rodapé fixo com as ações */
+.frm-foot { flex: 0 0 auto; display: flex; gap: 10px; padding: 12px 18px calc(14px + env(safe-area-inset-bottom)); background: var(--bg-card); border-top: 1px solid var(--border-color); }
+.frm-save { flex: 1; border: 0; border-radius: 16px; padding: 14px; font-weight: 800; font-size: .95rem; color: #fff; background: linear-gradient(135deg, #6b0a76, #3d0044); box-shadow: 0 8px 18px rgba(61, 0, 68, .3); }
+[data-bs-theme="dark"] .frm-save { background: linear-gradient(135deg, #a23bb5, #7a1a85); }
+.frm-save i { margin-right: 6px; }
+.frm-cancel { border: 0; border-radius: 16px; padding: 14px 18px; font-weight: 700; background: var(--chip); color: inherit; }
+.frm-del { border: 0; border-radius: 16px; width: 52px; flex: 0 0 52px; background: rgba(214, 40, 57, .12); color: var(--vermelho); }
+
+/* prévia do cartão */
+.cc-prev { border-radius: 18px; padding: 14px 16px; margin: 6px 0 2px; min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; color: #fff; background: linear-gradient(135deg, #57005F, #7a1a85); box-shadow: 0 10px 22px rgba(0, 0, 0, .22); transition: background .2s; }
+.cc-prev-top { display: flex; justify-content: space-between; align-items: center; font-size: 1rem; }
+.cc-prev-num { letter-spacing: .16em; font-size: 1rem; opacity: .92; }
+.cc-prev-bot { display: flex; justify-content: space-between; font-size: .78rem; opacity: .92; }
+
+/* nota */
+.nota-body { padding: 16px 18px 12px; display: flex; flex-direction: column; border-radius: 26px; }
+.nota-in { color: #222; } .nota-in::placeholder { color: rgba(0, 0, 0, .4); }
+.nota-foot { border-top: 0; background: transparent; padding: 12px 0 calc(4px + env(safe-area-inset-bottom)); align-items: center; }
+
+/* janela como "gaveta" no celular */
+@media (max-width: 575.98px) {
+  .frm-modal .modal-dialog { margin: 0; max-width: none; min-height: 100%; align-items: flex-end; }
+  .frm-modal .modal-content.frm { border-radius: 26px 26px 0 0 !important; width: 100%; max-height: 94vh; }
+  .frm-modal.fade .modal-dialog { transform: translateY(70px); transition: transform .3s ease-out; }
+  .frm-modal.show .modal-dialog { transform: none; }
+}
+.frm-ht h5 { color: var(--text-main); }
+.nota-body h5, .nota-body .nota-in { color: #222; }
